@@ -1,0 +1,147 @@
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Build results - publish
+publish/
+PublishProfiles/
+
+# Visual Studio cache/options
+.vs/
+.vscode/
+
+# Visual Studio Code extensions
+*.code-workspace
+
+# Rider
+.idea/
+*.sln.iml
+*.sln.imls
+*.v3.ncrunchproject
+*.ncrunchsolution
+
+# Test Results
+TestResults/
+*.trx
+*.coverage
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+.nuget/
+
+# ReSharper
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Visual Studio
+.vs/
+*.vcxproj.user
+*.suo
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Application data (local to each machine)
+%APPDATA%/5W2H-Management/
+
+# Project files
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.env
+.env.local
+
+# npm (if used)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build output
+out/
+dist/
+*.app
+*.apk
+*.aab
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+~*
+
+# Log files
+*.log
+logs/
+
+# Certificates/Keys
+*.pfx
+*.pem
+*.key
+*.crt
+
+# Visual Studio performance
+*.dat
+*.sp
+
+# Coverage reports
+coverage/
+opencoverage/
+
+# Others
+ClientBin/
+~$*
+Backup Files/
