@@ -26,6 +26,7 @@ public static class ServiceCollectionExtensions
 
         // Register application services
         services.AddScoped<IFiveW2HTaskService, FiveW2HTaskService>();
+        services.AddScoped<IDataImportExportService, CsvTaskDataTransferService>();
         services.AddScoped<IDataExportService, DataExportService>();
 
         return services;

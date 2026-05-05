@@ -1,5 +1,6 @@
 using Infrastructure.Database;
 using Infrastructure.DependencyInjection;
+using Presentation.WPF.Services;
 using Presentation.WPF.ViewModels;
 using Presentation.WPF.Views;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,6 +33,9 @@ public partial class App :  System.Windows.Application
 
         // Register services
         services.AddInfrastructureServices(connectionString);
+        services.AddScoped<IDialogService, DialogService>();
+        services.AddScoped<IFileDialogService, FileDialogService>();
+        services.AddScoped<IMessageDialogService, MessageDialogService>();
         services.AddScoped<MainViewModel>();
         services.AddScoped<DashboardViewModel>();
         services.AddScoped<MainWindow>();

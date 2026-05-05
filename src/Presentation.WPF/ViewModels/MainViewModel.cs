@@ -1,4 +1,3 @@
-using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Application.DTOs;
@@ -8,6 +7,7 @@ using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
 using Presentation.WPF.Models;
+using Presentation.WPF.Services;
 using System.Collections.ObjectModel;
 using DomainTaskStatus = Domain.Enums.TaskStatus;
 
@@ -20,6 +20,10 @@ namespace Presentation.WPF.ViewModels;
 public partial class MainViewModel : ObservableObject
 {
     private readonly IFiveW2HTaskService _taskService;
+    private readonly IDataImportExportService _dataImportExportService;
+    private readonly IDialogService _dialogService;
+    private readonly IFileDialogService _fileDialogService;
+    private readonly IMessageDialogService _messageDialogService;
 
     [ObservableProperty]
     private ObservableCollection<TaskModel> tasks = new();
@@ -97,9 +101,18 @@ public partial class MainViewModel : ObservableObject
 
     public IReadOnlyList<DomainTaskStatus> Statuses { get; } = Enum.GetValues<DomainTaskStatus>();
 
-    public MainViewModel(IFiveW2HTaskService taskService)
+    public MainViewModel(
+        IFiveW2HTaskService taskService,
+        IDataImportExportService dataImportExportService,
+        IDialogService dialogService,
+        IFileDialogService fileDialogService,
+        IMessageDialogService messageDialogService)
     {
         _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService));
+        _dataImportExportService = dataImportExportService ?? throw new ArgumentNullException(nameof(dataImportExportService));
+        _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
+        _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
+        _messageDialogService = messageDialogService ?? throw new ArgumentNullException(nameof(messageDialogService));
     }
 
     [RelayCommand]
@@ -240,6 +253,101 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public void OpenCreateScreen()
+    {
+        SelectedTabIndex = 0;
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelectedTask))]
+    public async Task EditSelectedTask()
+    {
+        if (SelectedTask is null)
+        {
+            StatusMessage = "Please select a task to edit";
+            return;
+        }
+
+        var edited = await _dialogService.ShowEditItemDialogAsync(SelectedTask);
+        if (!edited)
+        {
+            StatusMessage = "Edit cancelled";
+            return;
+        }
+
+        StatusMessage = "Task updated successfully";
+        await SearchTasks();
+    }
+
+    [RelayCommand]
+    public async Task ExportData()
+    {
+        var filePath = _fileDialogService.ShowSaveCsvDialog();
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            StatusMessage = "Export cancelled";
+            return;
+        }
+
+        try
+        {
+            IsLoading = true;
+            StatusMessage = "Exporting data...";
+
+            var taskDtos = await _taskService.GetAllTasksAsync();
+            await _dataImportExportService.ExportCsvAsync(filePath, taskDtos);
+
+            StatusMessage = $"Exported {taskDtos.Count()} task(s) to CSV";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Export error: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    [RelayCommand]
+    public async Task ImportData()
+    {
+        var filePath = _fileDialogService.ShowOpenCsvDialog();
+        if (string.IsNullOrWhiteSpace(filePath))
+        {
+            StatusMessage = "Import cancelled";
+            return;
+        }
+
+        try
+        {
+            IsLoading = true;
+            StatusMessage = "Importing data...";
+
+            var result = await _dataImportExportService.ImportCsvAsync(filePath);
+            await SearchTasks();
+
+            StatusMessage = result.Errors.Count == 0
+                ? $"Imported {result.ImportedCount}, updated {result.UpdatedCount}, skipped {result.SkippedCount}"
+                : $"Imported {result.ImportedCount}, updated {result.UpdatedCount}, skipped {result.SkippedCount}, errors {result.Errors.Count}";
+
+            if (result.Errors.Count > 0)
+            {
+                _messageDialogService.ShowWarning(
+                    string.Join(Environment.NewLine, result.Errors.Take(8)),
+                    "Import validation");
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Import error: {ex.Message}";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(HasSelectedTask))]
     public async Task DeleteSelectedTask()
     {
         if (SelectedTask is null)
@@ -248,10 +356,9 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        if (MessageBox.Show(
+        if (!_messageDialogService.Confirm(
             $"Are you sure you want to delete '{SelectedTask.What}'?",
-            "Confirm Delete",
-            MessageBoxButton.YesNo) != MessageBoxResult.Yes)
+            "Confirm Delete"))
         {
             return;
         }
@@ -279,6 +386,17 @@ public partial class MainViewModel : ObservableObject
         {
             IsLoading = false;
         }
+    }
+
+    partial void OnSelectedTaskChanged(TaskModel? value)
+    {
+        EditSelectedTaskCommand.NotifyCanExecuteChanged();
+        DeleteSelectedTaskCommand.NotifyCanExecuteChanged();
+    }
+
+    private bool HasSelectedTask()
+    {
+        return SelectedTask is not null;
     }
 
     private static TaskModel MapToModel(FiveW2HTaskDto dto)
