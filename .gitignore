@@ -145,3 +145,9 @@ opencoverage/
 ClientBin/
 ~$*
 Backup Files/
+
+# Keep the consolidated .NET app project tracked.
+!src/5W2H.App/
+!src/5W2H.App/**
+src/5W2H.App/[Bb]in/
+src/5W2H.App/[Oo]bj/
