@@ -85,6 +85,30 @@ public partial class MainViewModel : ObservableObject
     private string statusMessage = "Ready";
 
     [ObservableProperty]
+    private int totalActions;
+
+    [ObservableProperty]
+    private int pendingActions;
+
+    [ObservableProperty]
+    private int completedActions;
+
+    [ObservableProperty]
+    private decimal totalCost;
+
+    [ObservableProperty]
+    private string pendingPercentText = "0% do total";
+
+    [ObservableProperty]
+    private string completedPercentText = "0% do total";
+
+    [ObservableProperty]
+    private int criticalPendingActions;
+
+    [ObservableProperty]
+    private bool hasCriticalPendingActions;
+
+    [ObservableProperty]
     private PlotModel statusChartModel = new();
 
     [ObservableProperty]
@@ -126,6 +150,7 @@ public partial class MainViewModel : ObservableObject
 
             ApplyClientSideFilters(models);
             Tasks = new ObservableCollection<TaskModel>(models);
+            UpdateDashboardMetrics(models);
             UpdateCharts(models);
             StatusMessage = $"Loaded {models.Count} tasks";
         }
@@ -157,6 +182,7 @@ public partial class MainViewModel : ObservableObject
             var models = taskDtos.Select(MapToModel).ToList();
             ApplyClientSideFilters(models);
             Tasks = new ObservableCollection<TaskModel>(models);
+            UpdateDashboardMetrics(models);
             UpdateCharts(models);
             StatusMessage = $"Found {models.Count} tasks";
         }
@@ -245,6 +271,12 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
+    public void OpenDashboard()
+    {
+        SelectedTabIndex = 0;
+    }
+
+    [RelayCommand]
     public void OpenFilterScreen()
     {
         SelectedTabIndex = 1;
@@ -253,7 +285,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public void OpenCreateScreen()
     {
-        SelectedTabIndex = 0;
+        SelectedTabIndex = 2;
     }
 
     [RelayCommand(CanExecute = nameof(HasSelectedTask))]
@@ -274,6 +306,19 @@ public partial class MainViewModel : ObservableObject
 
         StatusMessage = "Task updated successfully";
         await SearchTasks();
+    }
+
+    [RelayCommand]
+    public async Task EditTask(TaskModel? task)
+    {
+        if (task is null)
+        {
+            StatusMessage = "Please select a task to edit";
+            return;
+        }
+
+        SelectedTask = task;
+        await EditSelectedTask();
     }
 
     [RelayCommand]
@@ -386,6 +431,19 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    [RelayCommand]
+    public async Task DeleteTask(TaskModel? task)
+    {
+        if (task is null)
+        {
+            StatusMessage = "Please select a task to delete";
+            return;
+        }
+
+        SelectedTask = task;
+        await DeleteSelectedTask();
+    }
+
     partial void OnSelectedTaskChanged(TaskModel? value)
     {
         EditSelectedTaskCommand.NotifyCanExecuteChanged();
@@ -430,50 +488,146 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    private void UpdateDashboardMetrics(IReadOnlyCollection<TaskModel> models)
+    {
+        TotalActions = models.Count;
+        PendingActions = models.Count(task => string.Equals(task.Status, nameof(TaskStatus.Pending), StringComparison.OrdinalIgnoreCase));
+        CompletedActions = models.Count(task => string.Equals(task.Status, nameof(TaskStatus.Completed), StringComparison.OrdinalIgnoreCase));
+        TotalCost = models.Sum(task => task.HowMuch);
+        CriticalPendingActions = models.Count(task =>
+            string.Equals(task.Priority, nameof(Priority.Critical), StringComparison.OrdinalIgnoreCase) &&
+            !string.Equals(task.Status, nameof(TaskStatus.Completed), StringComparison.OrdinalIgnoreCase));
+        HasCriticalPendingActions = CriticalPendingActions > 0;
+
+        PendingPercentText = TotalActions == 0 ? "0% do total" : $"{PendingActions * 100 / TotalActions}% do total";
+        CompletedPercentText = TotalActions == 0 ? "0% do total" : $"{CompletedActions * 100 / TotalActions}% do total";
+    }
+
     private void UpdateCharts(IReadOnlyCollection<TaskModel> models)
     {
-        StatusChartModel = BuildPieChart(
-            string.Empty,
-            models.GroupBy(task => task.Status)
-                .Select(group => (Label: group.Key, Value: group.Count(), Color: GetStatusColor(group.Key))));
-
-        PriorityChartModel = BuildPieChart(
-            string.Empty,
-            models.GroupBy(task => task.Priority)
-                .Select(group => (Label: group.Key, Value: group.Count(), Color: GetPriorityColor(group.Key))));
+        StatusChartModel = BuildStatusDonutChart(models);
+        PriorityChartModel = BuildPriorityColumnChart(models);
 
         ResponsibleChartModel = BuildResponsibleChart(models);
         TimelineChartModel = BuildTimelineChart(models);
     }
 
-    private static PlotModel BuildPieChart(string title, IEnumerable<(string Label, int Value, OxyColor Color)> slices)
+    private static PlotModel CreateDarkPlotModel()
     {
-        var model = new PlotModel { Title = title };
+        return new PlotModel
+        {
+            PlotAreaBorderColor = OxyColors.Transparent,
+            TextColor = OxyColor.FromRgb(248, 250, 252),
+            TitleColor = OxyColor.FromRgb(248, 250, 252),
+            Background = OxyColors.Transparent,
+            PlotAreaBackground = OxyColors.Transparent
+        };
+    }
+
+    private static PlotModel BuildStatusDonutChart(IReadOnlyCollection<TaskModel> models)
+    {
+        var model = CreateDarkPlotModel();
         var pieSeries = new PieSeries
         {
             StrokeThickness = 0,
-            InsideLabelPosition = 0.72,
+            InsideLabelFormat = string.Empty,
+            OutsideLabelFormat = string.Empty,
+            InnerDiameter = 0.58,
             AngleSpan = 360,
-            StartAngle = 0
+            StartAngle = 135,
+            Diameter = 0.74
         };
 
-        foreach (var slice in slices.Where(slice => slice.Value > 0))
+        var statusOrder = new[]
         {
-            pieSeries.Slices.Add(new PieSlice(slice.Label, slice.Value) { Fill = slice.Color });
+            nameof(TaskStatus.Pending),
+            nameof(TaskStatus.InProgress),
+            nameof(TaskStatus.Completed)
+        };
+
+        foreach (var status in statusOrder)
+        {
+            var count = models.Count(task => string.Equals(task.Status, status, StringComparison.OrdinalIgnoreCase));
+            if (count > 0)
+            {
+                pieSeries.Slices.Add(new PieSlice(ToStatusLabel(status), count) { Fill = GetStatusColor(status) });
+            }
         }
 
         if (pieSeries.Slices.Count == 0)
         {
-            pieSeries.Slices.Add(new PieSlice("Sem dados", 1) { Fill = OxyColor.FromRgb(189, 189, 189) });
+            pieSeries.Slices.Add(new PieSlice("Sem dados", 1) { Fill = OxyColor.FromRgb(63, 69, 81) });
         }
 
         model.Series.Add(pieSeries);
+        model.IsLegendVisible = true;
+        return model;
+    }
+
+    private static PlotModel BuildPriorityColumnChart(IReadOnlyCollection<TaskModel> models)
+    {
+        var model = CreateDarkPlotModel();
+        var categories = new[]
+        {
+            nameof(Priority.Low),
+            nameof(Priority.Medium),
+            nameof(Priority.High),
+            nameof(Priority.Critical)
+        };
+
+        var categoryAxis = new LinearAxis
+        {
+            Position = AxisPosition.Bottom,
+            Minimum = -0.5,
+            Maximum = 3.5,
+            MajorStep = 1,
+            MinorStep = 1,
+            TextColor = OxyColor.FromRgb(194, 180, 163),
+            TicklineColor = OxyColors.Transparent,
+            AxislineColor = OxyColors.Transparent,
+            LabelFormatter = value =>
+            {
+                var index = (int)Math.Round(value);
+                return index >= 0 && index < categories.Length ? ToPriorityLabel(categories[index]) : string.Empty;
+            }
+        };
+
+        var valueAxis = new LinearAxis
+        {
+            Position = AxisPosition.Left,
+            Minimum = 0,
+            AbsoluteMinimum = 0,
+            MajorGridlineColor = OxyColors.Transparent,
+            MinorGridlineColor = OxyColors.Transparent,
+            TicklineColor = OxyColors.Transparent,
+            AxislineColor = OxyColors.Transparent,
+            TextColor = OxyColor.FromRgb(194, 180, 163)
+        };
+
+        var barSeries = new RectangleBarSeries
+        {
+            StrokeThickness = 0
+        };
+
+        for (var index = 0; index < categories.Length; index++)
+        {
+            var category = categories[index];
+            var count = models.Count(task => string.Equals(task.Priority, category, StringComparison.OrdinalIgnoreCase));
+            barSeries.Items.Add(new RectangleBarItem(index - 0.17, 0, index + 0.17, count)
+            {
+                Color = GetPriorityColor(category)
+            });
+        }
+
+        model.Axes.Add(categoryAxis);
+        model.Axes.Add(valueAxis);
+        model.Series.Add(barSeries);
         return model;
     }
 
     private static PlotModel BuildResponsibleChart(IReadOnlyCollection<TaskModel> models)
     {
-        var model = new PlotModel();
+        var model = CreateDarkPlotModel();
         var topResponsible = models
             .GroupBy(task => string.IsNullOrWhiteSpace(task.Who) ? "Nao informado" : task.Who)
             .OrderByDescending(group => group.Count())
@@ -484,7 +638,10 @@ public partial class MainViewModel : ObservableObject
         {
             Position = AxisPosition.Left,
             GapWidth = 12,
-            IsTickCentered = true
+            IsTickCentered = true,
+            TextColor = OxyColor.FromRgb(194, 180, 163),
+            TicklineColor = OxyColors.Transparent,
+            AxislineColor = OxyColors.Transparent
         };
 
         foreach (var group in topResponsible)
@@ -496,15 +653,19 @@ public partial class MainViewModel : ObservableObject
         {
             Position = AxisPosition.Bottom,
             MinimumPadding = 0,
-            AbsoluteMinimum = 0
+            AbsoluteMinimum = 0,
+            MajorGridlineColor = OxyColors.Transparent,
+            MinorGridlineColor = OxyColors.Transparent,
+            TicklineColor = OxyColors.Transparent,
+            AxislineColor = OxyColors.Transparent,
+            TextColor = OxyColor.FromRgb(194, 180, 163)
         };
 
         var barSeries = new BarSeries
         {
-            FillColor = OxyColor.FromRgb(33, 150, 243),
+            FillColor = OxyColor.FromRgb(66, 165, 245),
             StrokeColor = OxyColors.Transparent,
-            LabelPlacement = LabelPlacement.Inside,
-            LabelFormatString = "{0:0}"
+            BarWidth = 16
         };
 
         foreach (var group in topResponsible)
@@ -520,7 +681,7 @@ public partial class MainViewModel : ObservableObject
 
     private static PlotModel BuildTimelineChart(IReadOnlyCollection<TaskModel> models)
     {
-        var model = new PlotModel();
+        var model = CreateDarkPlotModel();
         var orderedGroups = models
             .GroupBy(task => new DateTime(task.When.Year, task.When.Month, 1))
             .OrderBy(group => group.Key)
@@ -529,14 +690,16 @@ public partial class MainViewModel : ObservableObject
         var categoryAxis = new CategoryAxis
         {
             Position = AxisPosition.Bottom,
-            GapWidth = 0.6
+            GapWidth = 0.6,
+            TextColor = OxyColor.FromRgb(194, 180, 163)
         };
 
         var valueAxis = new LinearAxis
         {
             Position = AxisPosition.Left,
             MinimumPadding = 0,
-            AbsoluteMinimum = 0
+            AbsoluteMinimum = 0,
+            TextColor = OxyColor.FromRgb(194, 180, 163)
         };
 
         var lineSeries = new LineSeries
@@ -571,18 +734,37 @@ public partial class MainViewModel : ObservableObject
 
     private static OxyColor GetStatusColor(string status) => status switch
     {
-        nameof(TaskStatus.Completed) => OxyColor.FromRgb(76, 175, 80),
-        nameof(TaskStatus.InProgress) => OxyColor.FromRgb(255, 193, 7),
+        nameof(TaskStatus.Completed) => OxyColor.FromRgb(32, 169, 91),
+        nameof(TaskStatus.InProgress) => OxyColor.FromRgb(28, 82, 184),
         nameof(TaskStatus.OnHold) => OxyColor.FromRgb(41, 182, 246),
         nameof(TaskStatus.Cancelled) => OxyColor.FromRgb(158, 158, 158),
-        _ => OxyColor.FromRgb(244, 67, 54)
+        _ => OxyColor.FromRgb(216, 146, 10)
     };
 
     private static OxyColor GetPriorityColor(string priority) => priority switch
     {
-        nameof(Priority.Critical) => OxyColor.FromRgb(183, 28, 28),
-        nameof(Priority.High) => OxyColor.FromRgb(244, 67, 54),
-        nameof(Priority.Medium) => OxyColor.FromRgb(255, 193, 7),
-        _ => OxyColor.FromRgb(76, 175, 80)
+        nameof(Priority.Critical) => OxyColor.FromRgb(176, 18, 21),
+        nameof(Priority.High) => OxyColor.FromRgb(216, 93, 5),
+        nameof(Priority.Medium) => OxyColor.FromRgb(202, 138, 4),
+        _ => OxyColor.FromRgb(32, 169, 91)
+    };
+
+    private static string ToStatusLabel(string status) => status switch
+    {
+        nameof(TaskStatus.Completed) => "Concluido",
+        nameof(TaskStatus.InProgress) => "Em Andamento",
+        nameof(TaskStatus.Pending) => "Pendente",
+        nameof(TaskStatus.OnHold) => "Em Espera",
+        nameof(TaskStatus.Cancelled) => "Cancelado",
+        _ => status
+    };
+
+    private static string ToPriorityLabel(string priority) => priority switch
+    {
+        nameof(Priority.Critical) => "Critica",
+        nameof(Priority.High) => "Alta",
+        nameof(Priority.Medium) => "Media",
+        nameof(Priority.Low) => "Baixa",
+        _ => priority
     };
 }

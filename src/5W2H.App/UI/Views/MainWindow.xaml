@@ -3,24 +3,79 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:_5W2H.App.UI.Converters"
         xmlns:oxy="http://oxyplot.org/wpf"
-        Title="5W2H Task Management System"
-        Height="760"
-        Width="1320"
+        Title="5W2H - Gestao de Planos de Acao"
+        Height="790"
+        Width="1400"
         MinHeight="720"
         MinWidth="1180"
         Background="{StaticResource BackgroundBrush}"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
-        <local:DateTimeToStringConverter x:Key="DateTimeToStringConverter"/>
         <local:StatusColorConverter x:Key="StatusColorConverter"/>
         <local:PriorityColorConverter x:Key="PriorityColorConverter"/>
-        <local:WidthConverter x:Key="WidthConverter"/>
+        <local:StatusTextConverter x:Key="StatusTextConverter"/>
+        <local:PriorityTextConverter x:Key="PriorityTextConverter"/>
+        <local:TaskCategoryConverter x:Key="TaskCategoryConverter"/>
 
-        <Style x:Key="ReadableDataGridStyle" TargetType="{x:Type DataGrid}">
+        <Style x:Key="IconTextStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontFamily" Value="Segoe MDL2 Assets"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="RowHeight" Value="46"/>
-            <Setter Property="MinRowHeight" Value="46"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="NavButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="8,0,16,8"/>
+            <Setter Property="Padding" Value="13,0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border x:Name="Root"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#151D2B"/>
+                                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="ActiveNavButtonStyle" BasedOn="{StaticResource NavButtonStyle}" TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+            <Setter Property="Foreground" Value="White"/>
+        </Style>
+
+        <Style x:Key="FilterBoxStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="Height" Value="36"/>
+            <Setter Property="MinWidth" Value="160"/>
+            <Setter Property="Padding" Value="12,4"/>
+            <Setter Property="Background" Value="#080D15"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="DarkDataGridStyle" TargetType="{x:Type DataGrid}">
+            <Setter Property="AutoGenerateColumns" Value="False"/>
+            <Setter Property="CanUserAddRows" Value="False"/>
+            <Setter Property="CanUserDeleteRows" Value="False"/>
+            <Setter Property="IsReadOnly" Value="True"/>
+            <Setter Property="SelectionMode" Value="Single"/>
+            <Setter Property="SelectionUnit" Value="FullRow"/>
             <Setter Property="HeadersVisibility" Value="Column"/>
             <Setter Property="GridLinesVisibility" Value="Horizontal"/>
             <Setter Property="HorizontalGridLinesBrush" Value="{StaticResource BorderBrush}"/>
@@ -29,40 +84,34 @@
             <Setter Property="BorderThickness" Value="1"/>
             <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
             <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-            <Setter Property="RowBackground" Value="White"/>
-            <Setter Property="AlternatingRowBackground" Value="#F8FBFE"/>
-            <Setter Property="SelectionMode" Value="Single"/>
-            <Setter Property="SelectionUnit" Value="FullRow"/>
-            <Setter Property="AutoGenerateColumns" Value="False"/>
-            <Setter Property="CanUserAddRows" Value="False"/>
-            <Setter Property="CanUserDeleteRows" Value="False"/>
-            <Setter Property="IsReadOnly" Value="True"/>
-            <Setter Property="ColumnHeaderHeight" Value="44"/>
-            <Setter Property="HorizontalScrollBarVisibility" Value="Auto"/>
-            <Setter Property="VerticalScrollBarVisibility" Value="Auto"/>
-        </Style>
-
-        <Style x:Key="ReadableDataGridHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
-            <Setter Property="Background" Value="{StaticResource PrimaryDarkBrush}"/>
-            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="RowBackground" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="AlternatingRowBackground" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="RowHeight" Value="55"/>
+            <Setter Property="ColumnHeaderHeight" Value="40"/>
             <Setter Property="FontSize" Value="14"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="Padding" Value="12,0"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="BorderBrush" Value="#1565C0"/>
-            <Setter Property="BorderThickness" Value="0,0,1,0"/>
         </Style>
 
-        <Style x:Key="ReadableDataGridCellStyle" TargetType="{x:Type DataGridCell}">
-            <Setter Property="Padding" Value="12,8"/>
+        <Style x:Key="DarkDataGridHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
+            <Setter Property="Background" Value="#111722"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="0,0,0,1"/>
+        </Style>
+
+        <Style x:Key="DarkDataGridCellStyle" TargetType="{x:Type DataGridCell}">
+            <Setter Property="Padding" Value="10,6"/>
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type DataGridCell}">
                         <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
                                 Padding="{TemplateBinding Padding}">
                             <ContentPresenter VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
@@ -71,570 +120,595 @@
             </Setter>
         </Style>
 
-        <Style x:Key="ReadableDataGridRowStyle" TargetType="{x:Type DataGridRow}">
+        <Style x:Key="DarkDataGridRowStyle" TargetType="{x:Type DataGridRow}">
             <Setter Property="SnapsToDevicePixels" Value="True"/>
             <Setter Property="Validation.ErrorTemplate" Value="{x:Null}"/>
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#EEF7FF"/>
+                    <Setter Property="Background" Value="#121A28"/>
                 </Trigger>
                 <Trigger Property="IsSelected" Value="True">
-                    <Setter Property="Background" Value="#D7ECFF"/>
+                    <Setter Property="Background" Value="#13233D"/>
                     <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
                 </Trigger>
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="GridTextBlockStyle" TargetType="{x:Type TextBlock}">
-            <Setter Property="VerticalAlignment" Value="Center"/>
-            <Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+        <Style x:Key="FieldLabelStyle" TargetType="{x:Type TextBlock}">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}"/>
+            <Setter Property="Margin" Value="0,0,0,6"/>
         </Style>
 
-        <Style x:Key="ChartCardStyle" TargetType="{x:Type Border}">
-            <Setter Property="Background" Value="#FAFCFF"/>
+        <Style x:Key="DashboardCardStyle" TargetType="{x:Type Border}">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
             <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
             <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="CornerRadius" Value="6"/>
-            <Setter Property="Padding" Value="12"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="MinHeight" Value="112"/>
+        </Style>
+
+        <Style x:Key="DashboardChartStyle" TargetType="{x:Type Border}">
+            <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="24"/>
         </Style>
     </Window.Resources>
 
-    <DockPanel>
-        <Border DockPanel.Dock="Top" Background="{StaticResource PrimaryBrush}" Padding="24,18">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+    <Grid Background="{StaticResource BackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="247"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
-                    <TextBlock FontSize="26" FontWeight="Bold" Foreground="White" Text="5W2H Management"/>
-                    <TextBlock Margin="0,4,0,0" FontSize="12" Foreground="#DDEEFF"
-                               Text="Cadastre planos de acao e consulte os registros com filtros rapidos."/>
+        <Border Grid.Column="0"
+                Background="#0B111D"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,1,0">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="135"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="42"/>
+                </Grid.RowDefinitions>
+
+                <Border Grid.Row="0" BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,0,0,1" Padding="15,26,15,0">
+                    <StackPanel>
+                        <TextBlock Text="5W2H" FontSize="21" FontWeight="Bold" Foreground="{StaticResource PrimaryAccentBrush}"/>
+                        <TextBlock Text="Gestao de Planos de Acao" Margin="0,6,0,0" Foreground="{StaticResource TextSecondaryBrush}" FontSize="12"/>
+                    </StackPanel>
+                </Border>
+
+                <StackPanel Grid.Row="1" Margin="0,24,0,0">
+                    <Button Style="{StaticResource ActiveNavButtonStyle}" Command="{Binding OpenDashboardCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE80F;" Margin="0,0,12,0"/>
+                            <TextBlock Text="Dashboard" FontWeight="Bold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource NavButtonStyle}" Command="{Binding OpenFilterScreenCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE9D5;" Margin="0,0,12,0"/>
+                            <TextBlock Text="Acoes" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Style="{StaticResource NavButtonStyle}" Command="{Binding OpenCreateScreenCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE710;" Margin="0,0,12,0"/>
+                            <TextBlock Text="Nova Acao" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
 
-                <Button Grid.Column="1"
-                        Command="{Binding OpenFilterScreenCommand}"
-                        Content="Ir para consulta"
-                        Padding="18,10"
-                        Margin="12,0,0,0"
-                        Background="#FFFFFF"
-                        Foreground="{StaticResource PrimaryBrush}"
-                        FontWeight="Bold"
-                        VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="2"
+                           Text="{Binding StatusMessage}"
+                           Foreground="{StaticResource TextSecondaryBrush}"
+                           FontSize="11"
+                           Margin="15,0"
+                           TextTrimming="CharacterEllipsis"
+                           VerticalAlignment="Center"/>
             </Grid>
         </Border>
 
-        <Border DockPanel.Dock="Bottom" Background="{StaticResource SurfaceBrush}" Padding="10" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" Text="{Binding StatusMessage}" Foreground="{StaticResource TextSecondaryBrush}" VerticalAlignment="Center"/>
-                <ProgressBar Grid.Column="1" Width="160" Height="4" IsIndeterminate="{Binding IsLoading}"
-                             Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibilityConverter}}"
-                             Foreground="{StaticResource SuccessBrush}" Margin="10,0,0,0"/>
-            </Grid>
-        </Border>
+        <TabControl Grid.Column="1"
+                    SelectedIndex="{Binding SelectedTabIndex}"
+                    Background="{StaticResource BackgroundBrush}"
+                    BorderThickness="0"
+                    Padding="0">
+            <TabControl.Resources>
+                <Style TargetType="{x:Type TabItem}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+                <Style TargetType="{x:Type TabPanel}">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </Style>
+            </TabControl.Resources>
 
-        <Grid Background="{StaticResource BackgroundBrush}">
-            <TabControl SelectedIndex="{Binding SelectedTabIndex}" Margin="20">
-                <TabItem Header="Cadastro 5W2H">
-                    <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <Grid Margin="0,16,0,0" Grid.IsSharedSizeScope="True">
+            <TabItem>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="32,36,30,28">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="28"/>
+                            <RowDefinition Height="112"/>
+                            <RowDefinition Height="26"/>
+                            <RowDefinition Height="54"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="298"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel>
+                            <TextBlock Text="Dashboard" FontSize="25" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <TextBlock Text="Visao geral do seu plano de acao 5W2H" Margin="0,7,0,0" FontSize="14" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </StackPanel>
+
+                        <Grid Grid.Row="2">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2.1*"/>
-                                <ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Border Grid.Column="0"
-                                    Background="{StaticResource SurfaceBrush}"
-                                    BorderBrush="{StaticResource BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="8"
-                                    Padding="24"
-                                    Margin="0,0,16,0">
+                            <Border Style="{StaticResource DashboardCardStyle}" BorderBrush="#315DAE">
                                 <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
-
-                                    <StackPanel Grid.Row="0" Margin="0,0,0,20">
-                                        <TextBlock Text="Novo plano de acao" FontSize="22" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-                                        <TextBlock Margin="0,6,0,0" Text="Preencha os 5W2H principais, prioridade e observacoes para registrar a atividade."
-                                                   FontSize="13" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap"/>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="48"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="TOTAL DE ACOES" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding TotalActions}" Margin="0,5,0,0" FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
                                     </StackPanel>
-
-                                    <Grid Grid.Row="1" Margin="0,0,0,16">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Grid.Column="0" Margin="0,0,12,0" VerticalAlignment="Top">
-                                            <TextBlock Text="What" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                            <TextBox Text="{Binding NewWhat, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Top">
-                                            <TextBlock Text="Who" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                            <TextBox Text="{Binding NewWho, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <Grid Grid.Row="2" Margin="0,0,0,16">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Grid.Column="0" Margin="0,0,12,0" VerticalAlignment="Top">
-                                            <TextBlock Text="Why" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                            <TextBox Text="{Binding NewWhy, UpdateSourceTrigger=PropertyChanged}" Height="90" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Top">
-                                            <TextBlock Text="How" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                            <TextBox Text="{Binding NewHow, UpdateSourceTrigger=PropertyChanged}" Height="90" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <Grid Grid.Row="3" Margin="0,0,0,16">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="180"/>
-                                            <ColumnDefinition Width="160"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Grid.Column="0" Margin="0,0,12,0" VerticalAlignment="Top">
-                                            <TextBlock Text="Where" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                            <TextBox Text="{Binding NewWhere, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1" Margin="12,0,12,0" VerticalAlignment="Top">
-                                            <TextBlock Text="When" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                            <DatePicker SelectedDate="{Binding NewWhen}" Height="40"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="2" Margin="12,0,0,0" VerticalAlignment="Top">
-                                            <TextBlock Text="How Much" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                            <TextBox Text="{Binding NewHowMuch, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <Grid Grid.Row="4" Margin="0,0,0,20">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="220"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Grid.Column="0" Margin="0,0,16,0" VerticalAlignment="Top">
-                                            <TextBlock Text="Priority" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                            <ComboBox ItemsSource="{Binding Priorities}" SelectedItem="{Binding SelectedPriority}" Height="40"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                                            <TextBlock Text="Notes" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                            <TextBox Text="{Binding NewNotes, UpdateSourceTrigger=PropertyChanged}" Height="96" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
-                                        </StackPanel>
-                                    </Grid>
-
-                                    <StackPanel Grid.Row="5" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                                        <Button Command="{Binding ClearCreateFormCommand}"
-                                                Content="Limpar formulario"
-                                                Background="#90A4AE"
-                                                Foreground="White"
-                                                Padding="18,10"
-                                                Margin="0,0,10,0"/>
-                                        <Button Command="{Binding CreateTaskCommand}"
-                                                Content="Salvar cadastro"
-                                                Background="{StaticResource SuccessBrush}"
-                                                Foreground="White"
-                                                Padding="20,10"
-                                                FontWeight="Bold"/>
-                                    </StackPanel>
+                                    <Border Grid.Column="1" Width="40" Height="40" CornerRadius="12" Background="{StaticResource PrimaryBrush}" VerticalAlignment="Top">
+                                        <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE9D5;" FontSize="18" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
                                 </Grid>
                             </Border>
 
-                            <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                                <Border Background="{StaticResource SurfaceBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="8"
-                                        Padding="22"
-                                        Margin="0,0,0,16">
+                            <Border Grid.Column="2" Style="{StaticResource DashboardCardStyle}" BorderBrush="#AA7A19">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="48"/>
+                                    </Grid.ColumnDefinitions>
                                     <StackPanel>
-                                        <TextBlock Text="Resumo do cadastro" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-                                        <TextBlock Margin="0,12,0,0" Text="A tela registra os 5W2H completos com data, custo, prioridade e observacoes."
-                                                   TextWrapping="Wrap" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"/>
-                                        <TextBlock Margin="0,10,0,0" Text="Campos essenciais: What, Why, Who, How e When."
-                                                   TextWrapping="Wrap" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"/>
-                                        <TextBlock Margin="0,10,0,0" Text="Ao salvar, o app volta para a consulta com a lista atualizada."
-                                                   TextWrapping="Wrap" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                        <TextBlock Text="PENDENTES" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding PendingActions}" Margin="0,5,0,0" FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="{Binding PendingPercentText}" Margin="0,5,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"/>
                                     </StackPanel>
-                                </Border>
+                                    <Border Grid.Column="1" Width="40" Height="40" CornerRadius="12" Background="#D8940B" VerticalAlignment="Top">
+                                        <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE823;" FontSize="18" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
 
-                                <Border Background="{StaticResource SurfaceBrush}"
-                                        BorderBrush="{StaticResource BorderBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="8"
-                                        Padding="22">
+                            <Border Grid.Column="4" Style="{StaticResource DashboardCardStyle}" BorderBrush="#1E8E4D">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="48"/>
+                                    </Grid.ColumnDefinitions>
                                     <StackPanel>
-                                        <TextBlock Text="Dados atuais do formulario" FontSize="18" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-
-                                        <Border Margin="0,14,0,0" Padding="14" CornerRadius="6" Background="#F7FAFC" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                                            <StackPanel>
-                                                <TextBlock Text="{Binding NewWhat}" FontSize="15" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
-                                                <TextBlock Margin="0,8,0,0" Text="{Binding NewWhy}" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" TextWrapping="Wrap"/>
-                                                <TextBlock Margin="0,12,0,0" Text="{Binding NewHow}" FontSize="12" Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
-                                            </StackPanel>
-                                        </Border>
-
-                                        <Grid Margin="0,14,0,0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                                <TextBlock Text="Responsavel" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
-                                                <TextBlock Text="{Binding NewWho}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
-                                            </StackPanel>
-
-                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                                <TextBlock Text="Local" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
-                                                <TextBlock Text="{Binding NewWhere}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}" TextWrapping="Wrap"/>
-                                            </StackPanel>
-                                        </Grid>
-
-                                        <Grid Margin="0,14,0,0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-
-                                            <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                                <TextBlock Text="Entrega" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
-                                                <TextBlock Text="{Binding NewWhen, Converter={StaticResource DateTimeToStringConverter}}" FontSize="13" Foreground="{StaticResource TextPrimaryBrush}"/>
-                                            </StackPanel>
-
-                                            <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                                <TextBlock Text="Prioridade" FontSize="11" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}"/>
-                                                <Border Margin="0,4,0,0" Padding="8,4" CornerRadius="4" Background="{Binding SelectedPriority, Converter={StaticResource PriorityColorConverter}}" HorizontalAlignment="Left">
-                                                    <TextBlock Text="{Binding SelectedPriority}" Foreground="White" FontWeight="Bold" FontSize="11"/>
-                                                </Border>
-                                            </StackPanel>
-                                        </Grid>
+                                        <TextBlock Text="CONCLUIDAS" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding CompletedActions}" Margin="0,5,0,0" FontSize="26" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                        <TextBlock Text="{Binding CompletedPercentText}" Margin="0,5,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}"/>
                                     </StackPanel>
-                                </Border>
-                            </StackPanel>
+                                    <Border Grid.Column="1" Width="40" Height="40" CornerRadius="12" Background="#20A95B" VerticalAlignment="Top">
+                                        <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE73E;" FontSize="18" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="6" Style="{StaticResource DashboardCardStyle}" BorderBrush="#5B27B8">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="48"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Text="CUSTO TOTAL" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" FontWeight="SemiBold"/>
+                                        <TextBlock Text="{Binding TotalCost, StringFormat=R$ {0:N2}}" Margin="0,5,0,0" FontSize="25" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    </StackPanel>
+                                    <Border Grid.Column="1" Width="40" Height="40" CornerRadius="12" Background="#4C1BB2" VerticalAlignment="Top">
+                                        <TextBlock Text="$" FontSize="23" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </Grid>
+                            </Border>
                         </Grid>
-                    </ScrollViewer>
-                </TabItem>
 
-                <TabItem Header="Consulta e filtros">
-                    <Grid Margin="0,16,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="310"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Border Grid.Column="0" Background="{StaticResource SurfaceBrush}" BorderThickness="1" BorderBrush="{StaticResource BorderBrush}" CornerRadius="8" Padding="18" Margin="0,0,18,0">
-                            <ScrollViewer VerticalScrollBarVisibility="Auto">
-                                <StackPanel>
-                                    <TextBlock Text="Localizar registros" FontSize="20" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,4"/>
-                                    <TextBlock Text="Combine palavras-chave, periodo, responsavel e classificacoes." FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,18" TextWrapping="Wrap"/>
-
-                                    <TextBlock Text="Buscar" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}" Height="40" Margin="0,0,0,14"/>
-
-                                    <TextBlock Text="Data inicial" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                    <DatePicker SelectedDate="{Binding FilterStartDate}" Height="40" Margin="0,0,0,14"/>
-
-                                    <TextBlock Text="Data final" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                    <DatePicker SelectedDate="{Binding FilterEndDate}" Height="40" Margin="0,0,0,14"/>
-
-                                    <TextBlock Text="Responsavel" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                    <TextBox Text="{Binding FilterResponsible, UpdateSourceTrigger=PropertyChanged}" Height="40" Margin="0,0,0,14"/>
-
-                                    <TextBlock Text="Status" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                    <ComboBox ItemsSource="{Binding Statuses}" SelectedItem="{Binding FilterStatus}" Height="40" Margin="0,0,0,14"/>
-
-                                    <TextBlock Text="Prioridade" FontSize="12" FontWeight="SemiBold" Foreground="{StaticResource TextSecondaryBrush}" Margin="0,0,0,5"/>
-                                    <ComboBox ItemsSource="{Binding Priorities}" SelectedItem="{Binding FilterPriority}" Height="40" Margin="0,0,0,20"/>
-
-                                    <Button Command="{Binding SearchTasksCommand}"
-                                            Content="Aplicar filtros"
-                                            Padding="12,10"
-                                            Background="{StaticResource PrimaryBrush}"
-                                            Foreground="White"
-                                            FontWeight="Bold"
-                                            Margin="0,0,0,8"
-                                            HorizontalAlignment="Stretch"/>
-                                    <Button Command="{Binding ResetFiltersCommand}"
-                                            Content="Limpar filtros"
-                                            Padding="12,10"
-                                            Background="#90A4AE"
-                                            Foreground="White"
-                                            FontWeight="Bold"
-                                            Margin="0,0,0,8"
-                                            HorizontalAlignment="Stretch"/>
-                                    <Button Command="{Binding LoadTasksCommand}"
-                                            Content="Atualizar lista"
-                                            Padding="12,10"
-                                            Background="{StaticResource SuccessBrush}"
-                                            Foreground="White"
-                                            FontWeight="Bold"
-                                            Margin="0,0,0,8"
-                                            HorizontalAlignment="Stretch"/>
-                                    <Button Command="{Binding DeleteSelectedTaskCommand}"
-                                            Content="Excluir selecionado"
-                                            Padding="12,10"
-                                            Background="{StaticResource DangerBrush}"
-                                            Foreground="White"
-                                            FontWeight="Bold"
-                                            HorizontalAlignment="Stretch"/>
-                                </StackPanel>
-                            </ScrollViewer>
+                        <Border Grid.Row="4"
+                                Background="#4E0507"
+                                BorderBrush="#A01218"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="18,0"
+                                Visibility="{Binding HasCriticalPendingActions, Converter={StaticResource BoolToVisibilityConverter}}">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE7BA;" Foreground="#FF5A5F" FontSize="18" Margin="0,0,13,0"/>
+                                <TextBlock Text="{Binding CriticalPendingActions, StringFormat={}{0} acoes criticas pendentes de conclusao.}" Foreground="#FF5A5F" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </StackPanel>
                         </Border>
 
-                        <Border Grid.Column="1" Background="{StaticResource SurfaceBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" CornerRadius="8" Padding="20">
+                        <Grid Grid.Row="6">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="16"/>
+                                <ColumnDefinition Width="1*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Border Style="{StaticResource DashboardChartStyle}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Status das Acoes" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <oxy:PlotView Grid.Row="1" Model="{Binding StatusChartModel}" Background="Transparent"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="2" Style="{StaticResource DashboardChartStyle}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Prioridades" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <oxy:PlotView Grid.Row="1" Model="{Binding PriorityChartModel}" Background="Transparent"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="4" Style="{StaticResource DashboardChartStyle}">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Text="Por Responsavel" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                    <oxy:PlotView Grid.Row="1" Model="{Binding ResponsibleChartModel}" Background="Transparent"/>
+                                </Grid>
+                            </Border>
+                        </Grid>
+                    </Grid>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem>
+                <Grid Margin="32,34,30,28">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <TextBlock Text="Acoes" FontSize="25" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <TextBlock Text="{Binding Tasks.Count, StringFormat={}{0} acoes}" Margin="0,7,0,0" FontSize="14" Foreground="{StaticResource TextSecondaryBrush}"/>
+                        </StackPanel>
+                        <Button Grid.Column="1"
+                                Command="{Binding OpenCreateScreenCommand}"
+                                Background="{StaticResource PrimaryBrush}"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Height="36"
+                                Padding="17,0"
+                                VerticalAlignment="Center">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE710;" Margin="0,0,12,0"/>
+                                <TextBlock Text="Nova Acao" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="1" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="12"/>
+                            <ColumnDefinition Width="160"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Grid Grid.Column="0">
+                            <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Height="36"
+                                     Padding="36,7,12,7"
+                                     Background="#080D15"
+                                     BorderBrush="{StaticResource BorderBrush}"
+                                     Foreground="{StaticResource TextPrimaryBrush}"/>
+                            <TextBlock Style="{StaticResource IconTextStyle}"
+                                       Text="&#xE721;"
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       Margin="13,0,0,0"
+                                       VerticalAlignment="Center"
+                                       HorizontalAlignment="Left"/>
+                            <TextBlock Text="Buscar acoes..."
+                                       Foreground="{StaticResource TextMutedBrush}"
+                                       Margin="36,0,0,0"
+                                       IsHitTestVisible="False"
+                                       VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SearchText}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+
+                        <ComboBox Grid.Column="2"
+                                  Style="{StaticResource FilterBoxStyle}"
+                                  ItemsSource="{Binding Statuses}"
+                                  SelectedItem="{Binding FilterStatus}"
+                                  Text="Todos Status"/>
+                        <ComboBox Grid.Column="4"
+                                  Style="{StaticResource FilterBoxStyle}"
+                                  ItemsSource="{Binding Priorities}"
+                                  SelectedItem="{Binding FilterPriority}"
+                                  Text="Todas Prioridades"/>
+                        <Button Grid.Column="6"
+                                Command="{Binding SearchTasksCommand}"
+                                Content="Todos"
+                                Height="36"
+                                Background="#080D15"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                Foreground="{StaticResource TextPrimaryBrush}"/>
+                    </Grid>
+
+                    <Border Grid.Row="2"
+                            BorderBrush="{StaticResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="10"
+                            ClipToBounds="True"
+                            Background="{StaticResource SurfaceBrush}">
+                        <DataGrid ItemsSource="{Binding Tasks}"
+                                  SelectedItem="{Binding SelectedTask}"
+                                  Style="{StaticResource DarkDataGridStyle}"
+                                  ColumnHeaderStyle="{StaticResource DarkDataGridHeaderStyle}"
+                                  CellStyle="{StaticResource DarkDataGridCellStyle}"
+                                  RowStyle="{StaticResource DarkDataGridRowStyle}">
+                            <DataGrid.Columns>
+                                <DataGridTemplateColumn Header="O QUE" Width="2.4*" MinWidth="250">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding What}" FontWeight="Bold" TextTrimming="CharacterEllipsis" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                                <TextBlock Text="{Binding Why, Converter={StaticResource TaskCategoryConverter}}" Margin="0,3,0,0" FontSize="12" Foreground="{StaticResource TextSecondaryBrush}" TextTrimming="CharacterEllipsis"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTextColumn Header="QUEM" Binding="{Binding Who}" Width="1*" MinWidth="130"/>
+                                <DataGridTextColumn Header="QUANDO" Binding="{Binding When, StringFormat={}{0:dd MMM yyyy}}" Width="1*" MinWidth="120"/>
+
+                                <DataGridTemplateColumn Header="STATUS" Width="1.2*" MinWidth="150">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding Status, Converter={StaticResource StatusColorConverter}}"
+                                                    BorderBrush="{Binding Status, Converter={StaticResource StatusColorConverter}}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="9"
+                                                    Padding="11,3"
+                                                    HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding Status, Converter={StaticResource StatusTextConverter}}"
+                                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                                           FontSize="12"
+                                                           FontWeight="SemiBold"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTemplateColumn Header="PRIORIDADE" Width="1*" MinWidth="120">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{Binding Priority, Converter={StaticResource PriorityColorConverter}}"
+                                                    BorderBrush="{Binding Priority, Converter={StaticResource PriorityColorConverter}}"
+                                                    BorderThickness="1"
+                                                    CornerRadius="9"
+                                                    Padding="11,3"
+                                                    HorizontalAlignment="Left">
+                                                <TextBlock Text="{Binding Priority, Converter={StaticResource PriorityTextConverter}}"
+                                                           Foreground="{StaticResource TextPrimaryBrush}"
+                                                           FontSize="12"
+                                                           FontWeight="SemiBold"/>
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+
+                                <DataGridTextColumn Header="CUSTO" Binding="{Binding HowMuch, StringFormat=R$ {0:N2}}" Width="1*" MinWidth="120"/>
+
+                                <DataGridTemplateColumn Header="ACOES" Width="120" MinWidth="110">
+                                    <DataGridTemplateColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                <Button Command="{Binding DataContext.EditTaskCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent"
+                                                        Foreground="{StaticResource TextPrimaryBrush}"
+                                                        Padding="5"
+                                                        Margin="0,0,7,0"
+                                                        ToolTip="Editar">
+                                                    <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE70F;"/>
+                                                </Button>
+                                                <Button Command="{Binding DataContext.DeleteTaskCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                        CommandParameter="{Binding}"
+                                                        Background="Transparent"
+                                                        Foreground="{StaticResource DangerBrush}"
+                                                        Padding="5"
+                                                        ToolTip="Excluir">
+                                                    <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE74D;"/>
+                                                </Button>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </DataGridTemplateColumn.CellTemplate>
+                                </DataGridTemplateColumn>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <TabItem>
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <Grid Margin="32,34,30,28">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="24"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="Nova Acao" FontSize="25" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
+                                <TextBlock Text="Preencha os campos principais do plano 5W2H." Margin="0,7,0,0" Foreground="{StaticResource TextSecondaryBrush}"/>
+                            </StackPanel>
+                            <Button Grid.Column="1"
+                                    Command="{Binding OpenFilterScreenCommand}"
+                                    Content="Voltar para Acoes"
+                                    Background="#151D2B"
+                                    Foreground="{StaticResource TextPrimaryBrush}"
+                                    Height="36"
+                                    Padding="16,0"
+                                    VerticalAlignment="Center"/>
+                        </Grid>
+
+                        <Border Grid.Row="2"
+                                Background="{StaticResource SurfaceBrush}"
+                                BorderBrush="{StaticResource BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="10"
+                                Padding="24">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="18"/>
                                     <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="18"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="24"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Grid Grid.Row="0" Margin="0,0,0,16">
+                                <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="320"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-
-                                    <StackPanel Grid.Column="0">
-                                        <TextBlock Text="Registros cadastrados" FontSize="24" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}"/>
-                                        <TextBlock Text="{Binding Tasks.Count, StringFormat={}{0} item(ns) exibido(s)}" Margin="0,5,0,0" FontSize="13" Foreground="{StaticResource TextSecondaryBrush}"/>
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="O que"/>
+                                        <TextBox Text="{Binding NewWhat, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
                                     </StackPanel>
-
-                                    <Border Grid.Column="1"
-                                            Background="#E3F2FD"
-                                            BorderBrush="#BBDEFB"
-                                            BorderThickness="1"
-                                            CornerRadius="16"
-                                            Padding="14,8"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Stretch">
-                                        <TextBlock Text="{Binding SelectedTask.What, TargetNullValue=Nenhum item selecionado}"
-                                                   FontSize="13"
-                                                   Foreground="{StaticResource PrimaryBrush}"
-                                                   FontWeight="SemiBold"
-                                                   TextTrimming="CharacterEllipsis"/>
-                                    </Border>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Quem"/>
+                                        <TextBox Text="{Binding NewWho, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
+                                    </StackPanel>
                                 </Grid>
-
-                                <Border Grid.Row="1"
-                                        Background="#F7FAFC"
-                                        BorderBrush="{StaticResource BorderBrush}"
-                                        BorderThickness="1"
-                                        CornerRadius="6"
-                                        Padding="10"
-                                        Margin="0,0,0,16">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Grid.Column="0"
-                                                    Orientation="Horizontal"
-                                                    VerticalAlignment="Center">
-                                            <Button Command="{Binding OpenCreateScreenCommand}"
-                                                    Content="Adicionar"
-                                                    Background="{StaticResource PrimaryBrush}"
-                                                    Foreground="White"
-                                                    FontWeight="Bold"
-                                                    Padding="14,8"
-                                                    Margin="0,0,8,0"/>
-                                            <Button Command="{Binding EditSelectedTaskCommand}"
-                                                    Content="Editar"
-                                                    Background="{StaticResource InfoBrush}"
-                                                    Foreground="White"
-                                                    FontWeight="Bold"
-                                                    Padding="14,8"
-                                                    Margin="0,0,8,0"/>
-                                            <Button Command="{Binding DeleteSelectedTaskCommand}"
-                                                    Content="Excluir"
-                                                    Background="{StaticResource DangerBrush}"
-                                                    Foreground="White"
-                                                    FontWeight="Bold"
-                                                    Padding="14,8"
-                                                    Margin="0,0,8,0"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1"
-                                                    Orientation="Horizontal"
-                                                    HorizontalAlignment="Right">
-                                            <Button Command="{Binding ImportDataCommand}"
-                                                    Content="Importar dados"
-                                                    Background="#607D8B"
-                                                    Foreground="White"
-                                                    FontWeight="Bold"
-                                                    Padding="14,8"
-                                                    Margin="0,0,8,0"/>
-                                            <Button Command="{Binding ExportDataCommand}"
-                                                    Content="Exportar dados"
-                                                    Background="{StaticResource SuccessBrush}"
-                                                    Foreground="White"
-                                                    FontWeight="Bold"
-                                                    Padding="14,8"
-                                                    Margin="0"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
 
                                 <Grid Grid.Row="2">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="2.8*" MinWidth="620"/>
+                                        <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="18"/>
-                                        <ColumnDefinition Width="1*" MinWidth="280" MaxWidth="360"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Por que"/>
+                                        <TextBox Text="{Binding NewWhy, UpdateSourceTrigger=PropertyChanged}" Height="92" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Como"/>
+                                        <TextBox Text="{Binding NewHow, UpdateSourceTrigger=PropertyChanged}" Height="92" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                                    </StackPanel>
+                                </Grid>
 
-                                    <DataGrid Grid.Column="0"
-                                              ItemsSource="{Binding Tasks}"
-                                              SelectedItem="{Binding SelectedTask}"
-                                              Style="{StaticResource ReadableDataGridStyle}"
-                                              ColumnHeaderStyle="{StaticResource ReadableDataGridHeaderStyle}"
-                                              CellStyle="{StaticResource ReadableDataGridCellStyle}"
-                                              RowStyle="{StaticResource ReadableDataGridRowStyle}">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="ID"
-                                                                Binding="{Binding Id, StringFormat=\#00000}"
-                                                                Width="Auto"
-                                                                ElementStyle="{StaticResource GridTextBlockStyle}"/>
-                                            <DataGridTextColumn Header="What"
-                                                                Binding="{Binding What}"
-                                                                Width="1.7*"
-                                                                MinWidth="190"
-                                                                ElementStyle="{StaticResource GridTextBlockStyle}"/>
-                                            <DataGridTextColumn Header="Who"
-                                                                Binding="{Binding Who}"
-                                                                Width="*"
-                                                                MinWidth="120"
-                                                                ElementStyle="{StaticResource GridTextBlockStyle}"/>
-                                            <DataGridTextColumn Header="When"
-                                                                Binding="{Binding When, StringFormat={}{0:dd/MM/yyyy}}"
-                                                                Width="Auto"
-                                                                ElementStyle="{StaticResource GridTextBlockStyle}"/>
-                                            <DataGridTextColumn Header="Where"
-                                                                Binding="{Binding Where}"
-                                                                Width="*"
-                                                                MinWidth="120"
-                                                                ElementStyle="{StaticResource GridTextBlockStyle}"/>
-                                            <DataGridTemplateColumn Header="Status" Width="Auto" MinWidth="110">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <Border Background="{Binding Status, Converter={StaticResource StatusColorConverter}}"
-                                                                CornerRadius="4"
-                                                                Padding="9,4"
-                                                                HorizontalAlignment="Left">
-                                                            <TextBlock Text="{Binding Status}"
-                                                                       Foreground="White"
-                                                                       FontSize="12"
-                                                                       FontWeight="Bold"/>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                            <DataGridTemplateColumn Header="Priority" Width="Auto" MinWidth="105">
-                                                <DataGridTemplateColumn.CellTemplate>
-                                                    <DataTemplate>
-                                                        <Border Background="{Binding Priority, Converter={StaticResource PriorityColorConverter}}"
-                                                                CornerRadius="4"
-                                                                Padding="9,4"
-                                                                HorizontalAlignment="Left">
-                                                            <TextBlock Text="{Binding Priority}"
-                                                                       Foreground="White"
-                                                                       FontSize="12"
-                                                                       FontWeight="Bold"/>
-                                                        </Border>
-                                                    </DataTemplate>
-                                                </DataGridTemplateColumn.CellTemplate>
-                                            </DataGridTemplateColumn>
-                                            <DataGridTextColumn Header="Cost"
-                                                                Binding="{Binding HowMuch, StringFormat=C}"
-                                                                Width="Auto"
-                                                                ElementStyle="{StaticResource GridTextBlockStyle}"/>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
+                                <Grid Grid.Row="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="170"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="180"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Onde"/>
+                                        <TextBox Text="{Binding NewWhere, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="2">
+                                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Quando"/>
+                                        <DatePicker SelectedDate="{Binding NewWhen}" Height="40"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4">
+                                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Custo"/>
+                                        <TextBox Text="{Binding NewHowMuch, UpdateSourceTrigger=PropertyChanged}" Height="40"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="6">
+                                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Prioridade"/>
+                                        <ComboBox ItemsSource="{Binding Priorities}" SelectedItem="{Binding SelectedPriority}" Height="40"/>
+                                    </StackPanel>
+                                </Grid>
 
-                                    <Grid Grid.Column="2">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="10"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="10"/>
-                                            <RowDefinition Height="*"/>
-                                            <RowDefinition Height="10"/>
-                                            <RowDefinition Height="*"/>
-                                        </Grid.RowDefinitions>
-
-                                        <Border Grid.Row="0" Style="{StaticResource ChartCardStyle}">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="*"/>
-                                                </Grid.RowDefinitions>
-                                                <TextBlock Text="Status" FontSize="13" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                                <oxy:PlotView Grid.Row="1" Model="{Binding StatusChartModel}" MinHeight="92" Background="Transparent"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="2" Style="{StaticResource ChartCardStyle}">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="*"/>
-                                                </Grid.RowDefinitions>
-                                                <TextBlock Text="Prioridade" FontSize="13" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                                <oxy:PlotView Grid.Row="1" Model="{Binding PriorityChartModel}" MinHeight="92" Background="Transparent"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="4" Style="{StaticResource ChartCardStyle}">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="*"/>
-                                                </Grid.RowDefinitions>
-                                                <TextBlock Text="Top responsaveis" FontSize="13" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                                <oxy:PlotView Grid.Row="1" Model="{Binding ResponsibleChartModel}" MinHeight="92" Background="Transparent"/>
-                                            </Grid>
-                                        </Border>
-
-                                        <Border Grid.Row="6" Style="{StaticResource ChartCardStyle}">
-                                            <Grid>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition Height="*"/>
-                                                </Grid.RowDefinitions>
-                                                <TextBlock Text="Cronograma" FontSize="13" FontWeight="Bold" Foreground="{StaticResource TextPrimaryBrush}" Margin="0,0,0,6"/>
-                                                <oxy:PlotView Grid.Row="1" Model="{Binding TimelineChartModel}" MinHeight="92" Background="Transparent"/>
-                                            </Grid>
-                                        </Border>
-                                    </Grid>
+                                <Grid Grid.Row="6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <StackPanel>
+                                        <TextBlock Style="{StaticResource FieldLabelStyle}" Text="Observacoes"/>
+                                        <TextBox Text="{Binding NewNotes, UpdateSourceTrigger=PropertyChanged}" Height="86" TextWrapping="Wrap" AcceptsReturn="True" VerticalContentAlignment="Top"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Bottom" Margin="18,0,0,0">
+                                        <Button Command="{Binding ClearCreateFormCommand}"
+                                                Content="Limpar"
+                                                Background="#151D2B"
+                                                Foreground="{StaticResource TextPrimaryBrush}"
+                                                Height="40"
+                                                Padding="18,0"
+                                                Margin="0,0,8,0"/>
+                                        <Button Command="{Binding CreateTaskCommand}"
+                                                Content="Salvar Acao"
+                                                Background="{StaticResource PrimaryBrush}"
+                                                Foreground="White"
+                                                FontWeight="Bold"
+                                                Height="40"
+                                                Padding="20,0"/>
+                                    </StackPanel>
                                 </Grid>
                             </Grid>
                         </Border>
                     </Grid>
-                </TabItem>
-            </TabControl>
-        </Grid>
-    </DockPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+    </Grid>
 </Window>

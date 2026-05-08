@@ -8,23 +8,26 @@
     <local:WidthConverter x:Key="WidthConverter"/>
 
     <!-- Colors -->
-    <Color x:Key="PrimaryColor">#2196F3</Color>
-    <Color x:Key="PrimaryDarkColor">#1976D2</Color>
+    <Color x:Key="PrimaryColor">#1D4ED8</Color>
+    <Color x:Key="PrimaryDarkColor">#1E40AF</Color>
+    <Color x:Key="PrimaryAccentColor">#3B82F6</Color>
     <Color x:Key="AccentColor">#FF6B6B</Color>
     <Color x:Key="SuccessColor">#4CAF50</Color>
     <Color x:Key="WarningColor">#FFC107</Color>
     <Color x:Key="DangerColor">#F44336</Color>
     <Color x:Key="InfoColor">#29B6F6</Color>
-    <Color x:Key="BackgroundColor">#F5F7FA</Color>
-    <Color x:Key="SurfaceColor">#FFFFFF</Color>
-    <Color x:Key="TextPrimaryColor">#212121</Color>
-    <Color x:Key="TextSecondaryColor">#757575</Color>
-    <Color x:Key="BorderColor">#E0E0E0</Color>
+    <Color x:Key="BackgroundColor">#060B13</Color>
+    <Color x:Key="SurfaceColor">#0B111D</Color>
+    <Color x:Key="TextPrimaryColor">#F8FAFC</Color>
+    <Color x:Key="TextSecondaryColor">#C2B4A3</Color>
+    <Color x:Key="TextMutedColor">#8B949E</Color>
+    <Color x:Key="BorderColor">#6D6256</Color>
     <Color x:Key="DisabledColor">#BDBDBD</Color>
 
     <!-- Brushes -->
     <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
     <SolidColorBrush x:Key="PrimaryDarkBrush" Color="{StaticResource PrimaryDarkColor}"/>
+    <SolidColorBrush x:Key="PrimaryAccentBrush" Color="{StaticResource PrimaryAccentColor}"/>
     <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}"/>
     <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
     <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
@@ -34,6 +37,7 @@
     <SolidColorBrush x:Key="SurfaceBrush" Color="{StaticResource SurfaceColor}"/>
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}"/>
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}"/>
+    <SolidColorBrush x:Key="TextMutedBrush" Color="{StaticResource TextMutedColor}"/>
     <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource BorderColor}"/>
     <SolidColorBrush x:Key="DisabledBrush" Color="{StaticResource DisabledColor}"/>
 
@@ -48,11 +52,12 @@
         <Setter Property="Margin" Value="4,2"/>
         <Setter Property="Cursor" Value="Hand"/>
         <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="border" 
-                            CornerRadius="4" 
+                            CornerRadius="8"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
@@ -87,14 +92,14 @@
         <Setter Property="MinHeight" Value="40"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="Background" Value="#080D15"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
                     <Border x:Name="border" 
-                            CornerRadius="4"
+                            CornerRadius="8"
                             Background="{TemplateBinding Background}" 
                             BorderBrush="{TemplateBinding BorderBrush}" 
                             BorderThickness="{TemplateBinding BorderThickness}">
@@ -102,10 +107,10 @@
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryAccentBrush}"/>
                         </Trigger>
                         <Trigger Property="IsFocused" Value="true">
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryBrush}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryAccentBrush}"/>
                             <Setter Property="BorderThickness" TargetName="border" Value="2"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -121,7 +126,7 @@
         <Setter Property="MinHeight" Value="40"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="Background" Value="#080D15"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
     </Style>
 
@@ -131,7 +136,7 @@
         <Setter Property="MinHeight" Value="40"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
-        <Setter Property="Background" Value="{StaticResource SurfaceBrush}"/>
+        <Setter Property="Background" Value="#080D15"/>
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
     </Style>
