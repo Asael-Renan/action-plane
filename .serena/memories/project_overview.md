@@ -2,7 +2,7 @@
 
 Purpose: Windows desktop application for managing 5W2H tasks (What, Why, Where, When, Who, How, How Much) with CRUD flows, filtering, local persistence, import/export, and dashboard charts.
 
-Actual repo shape: a single WPF app project at `src/5W2H.App` plus one xUnit test project at `tests/5W2H.Tests`. Some docs and AGENTS content still describe an older multi-project Clean Architecture layout (`Domain/Application/Infrastructure/Presentation.WPF`), but the current codebase is organized inside one project with logical folders.
+Actual repo shape: a single WPF app project at `src/5W2H.App` plus one xUnit test project at `tests/5W2H.Tests`.
 
 Current code structure:
 - `src/5W2H.App/Core`: business models and services (`FiveW2HTask`, enums, `TaskService`, `BackupService`, DTOs)
@@ -11,18 +11,21 @@ Current code structure:
 - `src/5W2H.App/Resources`: theme XAML
 - `tests/5W2H.Tests`: unit tests for service and backup logic
 
-Tech stack confirmed from csproj files:
+Tech stack confirmed from project configuration:
 - .NET 8 (`net8.0-windows`)
 - WPF
-- CommunityToolkit.Mvvm 8.2.2
-- Dapper 2.1.15
-- System.Data.SQLite 1.0.118.0
-- OxyPlot.Wpf 2.1.2
-- Microsoft.Extensions.DependencyInjection 8.0.0
-- System.Text.Json 8.0.5
-- xUnit 2.7.0, Microsoft.NET.Test.Sdk 17.10.0, Moq 4.20.70
+- CommunityToolkit.Mvvm
+- Dapper
+- System.Data.SQLite
+- OxyPlot.Wpf
+- Microsoft.Extensions.DependencyInjection
+- System.Text.Json
+- xUnit, Moq, Microsoft.NET.Test.Sdk
+- Velopack for release packaging
 
-Platform notes:
-- Windows-only app because it uses WPF
-- Release config is self-contained with `RuntimeIdentifier=win-x64`
-- Main entrypoint for running is the WPF project `src/5W2H.App/5W2H.App.csproj`
+Configuration notes:
+- Shared build defaults are centralized in `Directory.Build.props`
+- NuGet versions are centralized in `Directory.Packages.props`
+- Repo-wide formatting and code style live in `.editorconfig`
+- Release config is self-contained for `win-x64`
+- Main entrypoint for running is `src/5W2H.App/5W2H.App.csproj`

@@ -1,153 +1,91 @@
-# Build results
+# Build outputs
+[Bb]in/
+[Oo]bj/
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
+publish/
+out/
+dist/
 x64/
 x86/
 [Ww][Ii][Nn]32/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
-bld/
-[Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
+artifacts/
 
-# Build results - publish
-publish/
-PublishProfiles/
+# Test and coverage
+TestResults/
+coverage/
+opencoverage/
+*.trx
+*.coverage
 
-# Visual Studio cache/options
+# IDE and local workspace
 .vs/
 .vscode/
-
-# Visual Studio Code extensions
-*.code-workspace
-
-# Rider
 .idea/
+*.code-workspace
 *.sln.iml
 *.sln.imls
 *.v3.ncrunchproject
 *.ncrunchsolution
-
-# Test Results
-TestResults/
-*.trx
-*.coverage
-
-# NuGet
-*.nupkg
-*.snupkg
-*.nuget.props
-*.nuget.targets
-.nuget/
-
-# ReSharper
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
-
-# JetBrains Rider
-.idea/
-*.sln.iml
-
-# Visual Studio
-.vs/
-*.vcxproj.user
-*.suo
-
-# User-specific files
 *.rsuser
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 
+# Local agent/tool state
+.codex/
+
+# NuGet
+.nuget/
+*.nupkg
+*.snupkg
+*.nuget.props
+*.nuget.targets
+
 # Temporary files
 tmp/
 temp/
+logs/
 *.tmp
-*.bak
-*.swp
-*~
-
-# OS files
-.DS_Store
-Thumbs.db
-desktop.ini
-ehthumbs.db
-
-# Database
-*.db
-*.sqlite
-*.sqlite3
-
-# Application data (local to each machine)
-%APPDATA%/5W2H-Management/
-
-# Project files
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
-
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-.env
-.env.local
-
-# npm (if used)
-node_modules/
-package-lock.json
-yarn.lock
-
-# Build output
-out/
-dist/
-*.app
-*.apk
-*.aab
-
-# Backup files
 *.bak
 *.backup
 *.old
 *.orig
+*.swp
+*.swo
+*~
 ~*
 
-# Log files
-*.log
-logs/
-
-# Certificates/Keys
+# Environment and secrets
+.env
+.env.local
 *.pfx
 *.pem
 *.key
 *.crt
 
-# Visual Studio performance
-*.dat
-*.sp
+# Databases and app-local state
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
 
-# Coverage reports
-coverage/
-opencoverage/
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
 
-# Others
-ClientBin/
-~$*
-Backup Files/
-
-# Keep the consolidated .NET app project tracked.
-!src/5W2H.App/
-!src/5W2H.App/**
-src/5W2H.App/[Bb]in/
-src/5W2H.App/[Oo]bj/
+# Optional frontend leftovers
+node_modules/
+package-lock.json
+yarn.lock
