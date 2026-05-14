@@ -1,0 +1,74 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "SemVer version to publish, for example 1.0.1"
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build, package and publish
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore 5W2H-Management.sln
+
+      - name: Build
+        run: dotnet build 5W2H-Management.sln --configuration Release --no-restore -p:Version=${{ inputs.version }}
+
+      - name: Test
+        run: dotnet test 5W2H-Management.sln --configuration Release --no-restore -p:Version=${{ inputs.version }}
+
+      - name: Publish app
+        run: dotnet publish src/5W2H.App/5W2H.App.csproj --configuration Release --runtime win-x64 --self-contained true --no-restore -p:Version=${{ inputs.version }} -o publish
+
+      - name: Install Velopack CLI
+        run: dotnet tool install --global vpk --version 0.0.1298
+
+      - name: Download previous Velopack release
+        shell: pwsh
+        run: |
+          vpk download github --repoUrl "https://github.com/${{ github.repository }}" --token "${{ secrets.GITHUB_TOKEN }}"
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "No previous Velopack release found. Continuing with a full package only."
+            exit 0
+          }
+
+      - name: Pack Velopack release
+        run: >
+          vpk pack
+          --packId 5W2H-Management
+          --packVersion ${{ inputs.version }}
+          --packDir publish
+          --mainExe 5W2H-Management.exe
+          --outputDir Releases
+          --packTitle "5W2H Management"
+          --packAuthors "Asael Renan"
+          --releaseNotes RELEASE_NOTES.md
+
+      - name: Upload GitHub release
+        run: >
+          vpk upload github
+          --repoUrl "https://github.com/${{ github.repository }}"
+          --token "${{ secrets.GITHUB_TOKEN }}"
+          --outputDir Releases
+          --publish
+          --releaseName "5W2H Management ${{ inputs.version }}"
+          --tag "v${{ inputs.version }}"

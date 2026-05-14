@@ -69,6 +69,12 @@
                             <TextBlock Text="Nova Acao" FontWeight="SemiBold" VerticalAlignment="Center"/>
                         </StackPanel>
                     </Button>
+                    <Button Style="{StaticResource SidebarNavButtonStyle}" Command="{Binding CheckForUpdatesCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconTextStyle}" Text="&#xE895;" Margin="0,0,12,0"/>
+                            <TextBlock Text="Atualizacoes" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
 
                 <TextBlock Grid.Row="2"

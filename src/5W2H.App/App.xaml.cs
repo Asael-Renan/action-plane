@@ -6,12 +6,23 @@ using _5W2H.App.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.IO;
+using Velopack;
 
 namespace _5W2H.App;
 
 public partial class App : Application
 {
     public IServiceProvider ServiceProvider { get; private set; } = null!;
+
+    [STAThread]
+    public static void Main(string[] args)
+    {
+        VelopackApp.Build().Run();
+
+        var app = new App();
+        app.InitializeComponent();
+        app.Run();
+    }
 
     protected override async void OnStartup(StartupEventArgs e)
     {
@@ -43,6 +54,7 @@ public partial class App : Application
         services.AddScoped<IDialogService, DialogService>();
         services.AddScoped<IFileDialogService, FileDialogService>();
         services.AddScoped<IMessageDialogService, MessageDialogService>();
+        services.AddSingleton<IAppUpdateService, VelopackAppUpdateService>();
 
         // Register ViewModels
         services.AddScoped<MainViewModel>();
@@ -72,6 +84,7 @@ public partial class App : Application
         if (mainWindow.DataContext is MainViewModel viewModel)
         {
             await viewModel.LoadTasksCommand.ExecuteAsync(null);
+            _ = viewModel.CheckForUpdatesOnStartupAsync();
         }
     }
 }

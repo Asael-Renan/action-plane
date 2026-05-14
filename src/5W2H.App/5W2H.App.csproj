@@ -8,6 +8,8 @@
     <LangVersion>latest</LangVersion>
     <AssemblyName>5W2H-Management</AssemblyName>
     <RootNamespace>_5W2H.App</RootNamespace>
+    <Version>1.0.0</Version>
+    <StartupObject>_5W2H.App.App</StartupObject>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
@@ -23,6 +25,12 @@
     <PackageReference Include="OxyPlot.Wpf" Version="2.1.2" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.118.0" />
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="Velopack" Version="0.0.1298" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ApplicationDefinition Remove="App.xaml" />
+    <Page Include="App.xaml" />
   </ItemGroup>
 
 </Project>

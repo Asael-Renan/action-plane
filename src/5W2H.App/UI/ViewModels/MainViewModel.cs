@@ -23,6 +23,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IDialogService _dialogService;
     private readonly IFileDialogService _fileDialogService;
     private readonly IMessageDialogService _messageDialogService;
+    private readonly IAppUpdateService _appUpdateService;
 
     [ObservableProperty]
     private ObservableCollection<TaskModel> tasks = new();
@@ -128,13 +129,15 @@ public partial class MainViewModel : ObservableObject
         IBackupService backupService,
         IDialogService dialogService,
         IFileDialogService fileDialogService,
-        IMessageDialogService messageDialogService)
+        IMessageDialogService messageDialogService,
+        IAppUpdateService appUpdateService)
     {
         _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService));
         _backupService = backupService ?? throw new ArgumentNullException(nameof(backupService));
         _dialogService = dialogService ?? throw new ArgumentNullException(nameof(dialogService));
         _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
         _messageDialogService = messageDialogService ?? throw new ArgumentNullException(nameof(messageDialogService));
+        _appUpdateService = appUpdateService ?? throw new ArgumentNullException(nameof(appUpdateService));
     }
 
     [RelayCommand]
@@ -206,6 +209,17 @@ public partial class MainViewModel : ObservableObject
         FilterStatus = null;
         FilterPriority = null;
         await LoadTasks();
+    }
+
+    [RelayCommand]
+    public async Task CheckForUpdates()
+    {
+        await CheckForUpdatesCore(showInteractiveMessages: true);
+    }
+
+    public async Task CheckForUpdatesOnStartupAsync()
+    {
+        await CheckForUpdatesCore(showInteractiveMessages: false);
     }
 
     [RelayCommand]
@@ -453,6 +467,67 @@ public partial class MainViewModel : ObservableObject
     private bool HasSelectedTask()
     {
         return SelectedTask is not null;
+    }
+
+    private async Task CheckForUpdatesCore(bool showInteractiveMessages)
+    {
+        var previousStatus = StatusMessage;
+
+        try
+        {
+            IsLoading = true;
+            StatusMessage = "Verificando atualizacoes...";
+
+            var result = await _appUpdateService.CheckForUpdatesAsync();
+
+            if (!result.IsInstalled)
+            {
+                StatusMessage = showInteractiveMessages ? result.Message : previousStatus;
+
+                if (showInteractiveMessages)
+                {
+                    _messageDialogService.ShowWarning(result.Message, "Atualizacoes");
+                }
+
+                return;
+            }
+
+            if (!result.IsUpdateAvailable)
+            {
+                StatusMessage = showInteractiveMessages ? result.Message : previousStatus;
+                return;
+            }
+
+            StatusMessage = result.Message;
+            var availableVersion = string.IsNullOrWhiteSpace(result.AvailableVersion)
+                ? "nova versao"
+                : $"versao {result.AvailableVersion}";
+
+            if (!_messageDialogService.Confirm(
+                $"A {availableVersion} esta disponivel. Baixar, aplicar e reiniciar agora?",
+                "Atualizacao disponivel"))
+            {
+                StatusMessage = "Atualizacao adiada";
+                return;
+            }
+
+            StatusMessage = "Baixando atualizacao...";
+            await _appUpdateService.DownloadAndApplyUpdateAsync();
+            StatusMessage = "Atualizacao baixada. Reiniciando...";
+        }
+        catch (Exception ex)
+        {
+            StatusMessage = $"Erro de atualizacao: {ex.Message}";
+
+            if (showInteractiveMessages)
+            {
+                _messageDialogService.ShowWarning(StatusMessage, "Atualizacoes");
+            }
+        }
+        finally
+        {
+            IsLoading = false;
+        }
     }
 
     private static TaskModel MapToModel(FiveW2HTaskDto dto)

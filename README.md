@@ -34,13 +34,14 @@ dotnet restore
 dotnet build
 dotnet test
 dotnet run --project src/5W2H.App/5W2H.App.csproj
-dotnet publish -c Release src/5W2H.App/5W2H.App.csproj -o publish
+dotnet publish -c Release -r win-x64 --self-contained true src/5W2H.App/5W2H.App.csproj -o publish
 ```
 
 ## Project Notes
 
 - The app is Windows-only because it uses WPF.
 - Release builds are self-contained for `win-x64`.
+- Installer/update releases use Velopack assets published to GitHub Releases.
 - The database is created automatically on first run under `%APPDATA%`.
 - The architecture is intentionally a single application project, not the
   older split `Domain/Application/Infrastructure/Presentation.WPF` layout.
