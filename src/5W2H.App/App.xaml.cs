@@ -46,11 +46,9 @@ public partial class App : Application
 
         // Register ViewModels
         services.AddScoped<MainViewModel>();
-        services.AddScoped<DashboardViewModel>();
 
         // Register Views
         services.AddScoped<MainWindow>();
-        services.AddScoped<DashboardWindow>();
 
         ServiceProvider = services.BuildServiceProvider();
 
