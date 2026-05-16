@@ -132,6 +132,30 @@ public class PriorityTextConverter : IValueConverter
     }
 }
 
+/// <summary>
+/// Displays TaskStatus and Priority enum values in Portuguese for combo boxes.
+/// </summary>
+public class EnumDisplayConverter : IValueConverter
+{
+    private static readonly StatusTextConverter StatusText = new();
+    private static readonly PriorityTextConverter PriorityText = new();
+
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        return value switch
+        {
+            _5W2H.App.Core.Models.TaskStatus status => StatusText.Convert(status, targetType, parameter, culture),
+            _5W2H.App.Core.Models.Priority priority => PriorityText.Convert(priority, targetType, parameter, culture),
+            _ => value?.ToString() ?? string.Empty
+        };
+    }
+
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        throw new NotImplementedException();
+    }
+}
+
 public class TaskCategoryConverter : IValueConverter
 {
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)

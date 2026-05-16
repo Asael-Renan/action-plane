@@ -389,12 +389,12 @@
                                       Style="{StaticResource FilterComboBoxStyle}"
                                       ItemsSource="{Binding Statuses}"
                                       SelectedItem="{Binding FilterStatus}"
-                                      Text="Todos Status"/>
+                                      Tag="Todos Status"/>
                             <ComboBox Grid.Column="4"
                                       Style="{StaticResource FilterComboBoxStyle}"
                                       ItemsSource="{Binding Priorities}"
                                       SelectedItem="{Binding FilterPriority}"
-                                      Text="Todas Prioridades"/>
+                                      Tag="Todas Prioridades"/>
                             <Button Grid.Column="6"
                                     Command="{Binding SearchTasksCommand}"
                                     Content="Todos"

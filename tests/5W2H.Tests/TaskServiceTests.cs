@@ -5,7 +5,7 @@ using _5W2H.App.Core.Services;
 using _5W2H.App.Data;
 using TaskStatus = _5W2H.App.Core.Models.TaskStatus;
 
-namespace _5W2H.Tests;
+namespace FiveW2H.Tests;
 
 public class TaskServiceTests
 {
