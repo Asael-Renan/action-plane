@@ -19,13 +19,19 @@ artifacts/
 TestResults/
 coverage/
 opencoverage/
+coverage*.json
+coverage*.xml
+coverage*.info
 *.trx
 *.coverage
+BenchmarkDotNet.Artifacts/
 
 # IDE and local workspace
 .vs/
 .vscode/
 .idea/
+.cursor/
+.history/
 *.code-workspace
 *.sln.iml
 *.sln.imls
@@ -38,22 +44,35 @@ _ReSharper*/
 *.suo
 *.user
 *.userosscache
+*.userprefs
 *.sln.docstates
+*.lscache
 
 # Local agent/tool state
 .codex/
 
 # NuGet
 .nuget/
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
 *.nupkg
 *.snupkg
 *.nuget.props
 *.nuget.targets
+project.lock.json
+project.fragment.lock.json
+
+# MSBuild / WPF
+*.binlog
+MSBuild_Logs/
+*_wpftmp.csproj
+*.pubxml.user
 
 # Temporary files
 tmp/
 temp/
 logs/
+*.log
 *.tmp
 *.bak
 *.backup
