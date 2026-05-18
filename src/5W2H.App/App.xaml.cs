@@ -1,14 +1,14 @@
-using _5W2H.App.Core.Services;
-using _5W2H.App.Data;
-using _5W2H.App.UI.Services;
-using _5W2H.App.UI.ViewModels;
-using _5W2H.App.UI.Views;
+using FiveW2H.App.Core.Services;
+using FiveW2H.App.Data;
+using FiveW2H.App.UI.Services;
+using FiveW2H.App.UI.ViewModels;
+using FiveW2H.App.UI.Views;
 using Microsoft.Extensions.DependencyInjection;
 using System.Windows;
 using System.IO;
 using Velopack;
 
-namespace _5W2H.App;
+namespace FiveW2H.App;
 
 public partial class App : Application
 {

@@ -4,17 +4,15 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <AssemblyName>5W2H-Management</AssemblyName>
-    <RootNamespace>_5W2H.App</RootNamespace>
+    <RootNamespace>FiveW2H.App</RootNamespace>
     <Version>1.0.0</Version>
-    <StartupObject>_5W2H.App.App</StartupObject>
+    <StartupObject>FiveW2H.App.App</StartupObject>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <PublishReadyToRun>true</PublishReadyToRun>
     <SelfContained>true</SelfContained>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" />
     <PackageReference Include="Dapper" />
@@ -24,10 +22,8 @@
     <PackageReference Include="System.Text.Json" />
     <PackageReference Include="Velopack" />
   </ItemGroup>
-
   <ItemGroup>
     <ApplicationDefinition Remove="App.xaml" />
     <Page Include="App.xaml" />
   </ItemGroup>
-
 </Project>

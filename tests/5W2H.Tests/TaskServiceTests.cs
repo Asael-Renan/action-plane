@@ -1,9 +1,9 @@
 using Xunit;
 using Moq;
-using _5W2H.App.Core.Models;
-using _5W2H.App.Core.Services;
-using _5W2H.App.Data;
-using TaskStatus = _5W2H.App.Core.Models.TaskStatus;
+using FiveW2H.App.Core.Models;
+using FiveW2H.App.Core.Services;
+using FiveW2H.App.Data;
+using TaskStatus = FiveW2H.App.Core.Models.TaskStatus;
 
 namespace FiveW2H.Tests;
 

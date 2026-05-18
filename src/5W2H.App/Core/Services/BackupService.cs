@@ -1,12 +1,12 @@
-using _5W2H.App.Core.Models;
-using _5W2H.App.Data;
+using FiveW2H.App.Core.Models;
+using FiveW2H.App.Data;
 using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using TaskStatus = _5W2H.App.Core.Models.TaskStatus;
+using TaskStatus = FiveW2H.App.Core.Models.TaskStatus;
 
-namespace _5W2H.App.Core.Services;
+namespace FiveW2H.App.Core.Services;
 
 /// <summary>
 /// Service for import/export and backup operations.
@@ -41,6 +41,7 @@ public class BackupService : IBackupService
     ];
 
     private readonly ITaskRepository _repository;
+    private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = true };
 
     public BackupService(ITaskRepository repository)
     {
@@ -183,14 +184,14 @@ public class BackupService : IBackupService
             t.UpdatedAt
         }).ToList();
 
-        var json = JsonSerializer.Serialize(dtos, new JsonSerializerOptions { WriteIndented = true });
+        var json = JsonSerializer.Serialize(dtos, JsonOptions);
         return await Task.FromResult(json);
     }
 
     /// <summary>Exports tasks to file in specified format (csv or json).</summary>
     public async Task ExportToFileAsync(IEnumerable<FiveW2HTask> tasks, string filePath, string format)
     {
-        string content = format.ToLower() switch
+        string content = format.ToLowerInvariant() switch
         {
             "csv" => await ExportToCsvAsync(tasks),
             "json" => await ExportToJsonAsync(tasks),
@@ -200,7 +201,7 @@ public class BackupService : IBackupService
         await File.WriteAllTextAsync(filePath, content);
     }
 
-    private async Task<string> ExportToCsvAsync(IEnumerable<FiveW2HTask> tasks)
+    private static async Task<string> ExportToCsvAsync(IEnumerable<FiveW2HTask> tasks)
     {
         var csv = new StringBuilder();
         csv.AppendLine("Id,What,Why,Where,When,Who,How,HowMuch,Status,Priority,Notes,CreatedAt,UpdatedAt");
@@ -214,7 +215,7 @@ public class BackupService : IBackupService
             var escapedHow = EscapeCsvField(task.How);
             var escapedNotes = EscapeCsvField(task.Notes);
 
-            csv.AppendLine(
+            csv.AppendLine(CultureInfo.InvariantCulture,
                 $"{task.Id},\"{escapedWhat}\",\"{escapedWhy}\",\"{escapedWhere}\"," +
                 $"{task.When:yyyy-MM-dd HH:mm:ss},\"{escapedWho}\",\"{escapedHow}\"," +
                 $"{task.HowMuch},{task.Status},{task.Priority},\"{escapedNotes}\"," +

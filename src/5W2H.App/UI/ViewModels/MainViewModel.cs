@@ -1,16 +1,17 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using _5W2H.App.Core.Models;
-using _5W2H.App.Core.Services;
-using _5W2H.App.UI.Models;
-using _5W2H.App.UI.Services;
+using System.Globalization;
+using FiveW2H.App.Core.Models;
+using FiveW2H.App.Core.Services;
+using FiveW2H.App.UI.Models;
+using FiveW2H.App.UI.Services;
 using System.Collections.ObjectModel;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
-using TaskStatus = _5W2H.App.Core.Models.TaskStatus;
+using TaskStatus = FiveW2H.App.Core.Models.TaskStatus;
 
-namespace _5W2H.App.UI.ViewModels;
+namespace FiveW2H.App.UI.ViewModels;
 
 /// <summary>
 /// ViewModel for the main task management window.
@@ -44,7 +45,7 @@ public partial class MainViewModel : ObservableObject
     private string? filterResponsible;
 
     [ObservableProperty]
-    private _5W2H.App.Core.Models.TaskStatus? filterStatus;
+    private FiveW2H.App.Core.Models.TaskStatus? filterStatus;
 
     [ObservableProperty]
     private Priority? filterPriority;
@@ -122,7 +123,7 @@ public partial class MainViewModel : ObservableObject
     private PlotModel timelineChartModel = new();
 
     public IReadOnlyList<Priority> Priorities { get; } = Enum.GetValues<Priority>();
-    public IReadOnlyList<_5W2H.App.Core.Models.TaskStatus> Statuses { get; } = Enum.GetValues<_5W2H.App.Core.Models.TaskStatus>();
+    public IReadOnlyList<FiveW2H.App.Core.Models.TaskStatus> Statuses { get; } = Enum.GetValues<FiveW2H.App.Core.Models.TaskStatus>();
 
     public MainViewModel(
         ITaskService taskService,
@@ -563,7 +564,7 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private void UpdateDashboardMetrics(IReadOnlyCollection<TaskModel> models)
+    private void UpdateDashboardMetrics(List<TaskModel> models)
     {
         TotalActions = models.Count;
         PendingActions = models.Count(task => string.Equals(task.Status, nameof(TaskStatus.Pending), StringComparison.OrdinalIgnoreCase));
@@ -796,7 +797,7 @@ public partial class MainViewModel : ObservableObject
             for (var i = 0; i < orderedGroups.Count; i++)
             {
                 var group = orderedGroups[i];
-                categoryAxis.Labels.Add(group.Key.ToString("MM/yyyy"));
+                categoryAxis.Labels.Add(group.Key.ToString("MM/yyyy", CultureInfo.InvariantCulture));
                 lineSeries.Points.Add(new DataPoint(i, group.Count()));
             }
         }

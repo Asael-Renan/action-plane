@@ -1,10 +1,10 @@
-using _5W2H.App.Core.Services;
-using _5W2H.App.UI.Models;
-using _5W2H.App.UI.ViewModels;
-using _5W2H.App.UI.Views;
+using FiveW2H.App.Core.Services;
+using FiveW2H.App.UI.Models;
+using FiveW2H.App.UI.ViewModels;
+using FiveW2H.App.UI.Views;
 using System.Windows;
 
-namespace _5W2H.App.UI.Services;
+namespace FiveW2H.App.UI.Services;
 
 public class DialogService : IDialogService
 {

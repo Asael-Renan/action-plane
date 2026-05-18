@@ -1,8 +1,8 @@
-using _5W2H.App.Core.Models;
-using _5W2H.App.Data;
-using TaskStatus = _5W2H.App.Core.Models.TaskStatus;
+using FiveW2H.App.Core.Models;
+using FiveW2H.App.Data;
+using TaskStatus = FiveW2H.App.Core.Models.TaskStatus;
 
-namespace _5W2H.App.Core.Services;
+namespace FiveW2H.App.Core.Services;
 
 /// <summary>
 /// Application service for managing 5W2H tasks.
@@ -73,8 +73,7 @@ public class TaskService : ITaskService
 
     public async Task<FiveW2HTaskDto> CreateTaskAsync(CreateFiveW2HTaskDto dto)
     {
-        if (dto is null)
-            throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
 
         ValidateTaskDto(dto);
 
@@ -105,8 +104,7 @@ public class TaskService : ITaskService
 
     public async Task<FiveW2HTaskDto> UpdateTaskAsync(UpdateFiveW2HTaskDto dto)
     {
-        if (dto is null)
-            throw new ArgumentNullException(nameof(dto));
+        ArgumentNullException.ThrowIfNull(dto);
 
         var exists = await _repository.ExistsAsync(dto.Id);
         if (!exists)
@@ -153,7 +151,7 @@ public class TaskService : ITaskService
             InProgressTasks = tasks.Count(t => t.Status == TaskStatus.InProgress),
             PendingTasks = tasks.Count(t => t.Status == TaskStatus.Pending),
             TotalCost = tasks.Sum(t => t.HowMuch),
-            AverageCost = tasks.Any() ? tasks.Average(t => t.HowMuch) : 0,
+            AverageCost = tasks.Count > 0 ? tasks.Average(t => t.HowMuch) : 0,
             TasksByResponsible = tasks
                 .GroupBy(t => t.Who)
                 .ToDictionary(g => g.Key, g => g.Count()),
@@ -173,7 +171,7 @@ public class TaskService : ITaskService
         return summary;
     }
 
-    private void ValidateTaskDto(CreateFiveW2HTaskDto dto)
+    private static void ValidateTaskDto(CreateFiveW2HTaskDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.What))
             throw new InvalidOperationException("What field is required");
@@ -189,7 +187,7 @@ public class TaskService : ITaskService
             throw new InvalidOperationException("When field is required");
     }
 
-    private void ValidateUpdateDto(UpdateFiveW2HTaskDto dto)
+    private static void ValidateUpdateDto(UpdateFiveW2HTaskDto dto)
     {
         if (string.IsNullOrWhiteSpace(dto.What))
             throw new InvalidOperationException("What field is required");

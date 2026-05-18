@@ -1,4 +1,4 @@
-namespace _5W2H.App.Core.Models;
+namespace FiveW2H.App.Core.Models;
 
 /// <summary>
 /// Represents the status of a 5W2H task.

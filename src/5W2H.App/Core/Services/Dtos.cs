@@ -1,6 +1,6 @@
-using _5W2H.App.Core.Models;
+using FiveW2H.App.Core.Models;
 
-namespace _5W2H.App.Core.Services;
+namespace FiveW2H.App.Core.Services;
 
 /// <summary>
 /// Data Transfer Object for displaying a 5W2H task in the UI.
@@ -15,7 +15,7 @@ public class FiveW2HTaskDto
     public string Who { get; set; } = string.Empty;
     public string How { get; set; } = string.Empty;
     public decimal HowMuch { get; set; }
-    public _5W2H.App.Core.Models.TaskStatus Status { get; set; }
+    public FiveW2H.App.Core.Models.TaskStatus Status { get; set; }
     public Priority Priority { get; set; }
     public string Notes { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
@@ -51,7 +51,7 @@ public class UpdateFiveW2HTaskDto
     public string Who { get; set; } = string.Empty;
     public string How { get; set; } = string.Empty;
     public decimal HowMuch { get; set; }
-    public _5W2H.App.Core.Models.TaskStatus Status { get; set; }
+    public FiveW2H.App.Core.Models.TaskStatus Status { get; set; }
     public Priority Priority { get; set; }
     public string Notes { get; set; } = string.Empty;
 }

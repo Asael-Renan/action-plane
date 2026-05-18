@@ -1,6 +1,6 @@
 using Microsoft.Win32;
 
-namespace _5W2H.App.UI.Services;
+namespace FiveW2H.App.UI.Services;
 
 public interface IFileDialogService
 {
@@ -16,7 +16,7 @@ public interface IMessageDialogService
 
 public interface IDialogService
 {
-    Task<bool> ShowEditItemDialogAsync(_5W2H.App.UI.Models.TaskModel task);
+    Task<bool> ShowEditItemDialogAsync(FiveW2H.App.UI.Models.TaskModel task);
 }
 
 public class FileDialogService : IFileDialogService

@@ -1,8 +1,8 @@
-using _5W2H.App.Core.Models;
+using FiveW2H.App.Core.Models;
 using Dapper;
 using System.Data.SQLite;
 
-namespace _5W2H.App.Data;
+namespace FiveW2H.App.Data;
 
 /// <summary>
 /// Repository interface for 5W2H task operations.
@@ -125,8 +125,7 @@ public class TaskRepository : ITaskRepository
 
     public async Task<int> AddAsync(FiveW2HTask task)
     {
-        if (task == null)
-            throw new ArgumentNullException(nameof(task));
+        ArgumentNullException.ThrowIfNull(task);
 
         using (var connection = new SQLiteConnection(_connectionString))
         {
@@ -160,8 +159,7 @@ public class TaskRepository : ITaskRepository
 
     public async Task<bool> UpdateAsync(FiveW2HTask task)
     {
-        if (task == null)
-            throw new ArgumentNullException(nameof(task));
+        ArgumentNullException.ThrowIfNull(task);
 
         using (var connection = new SQLiteConnection(_connectionString))
         {

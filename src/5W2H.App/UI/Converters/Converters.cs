@@ -2,7 +2,7 @@ using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace _5W2H.App.UI.Converters;
+namespace FiveW2H.App.UI.Converters;
 
 /// <summary>
 /// Converts boolean values to Visibility for WPF binding.
@@ -53,7 +53,7 @@ public class PriorityColorConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
         var priority = value?.ToString() ?? "";
-        return priority.ToLower() switch
+        return priority.ToLowerInvariant() switch
         {
             "critical" => new SolidColorBrush(Color.FromRgb(92, 16, 16)),
             "high" => new SolidColorBrush(Color.FromRgb(92, 45, 10)),
@@ -74,7 +74,7 @@ public class StatusColorConverter : IValueConverter
     public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
     {
         var status = value?.ToString() ?? "";
-        return status.ToLower() switch
+        return status.ToLowerInvariant() switch
         {
             "completed" => new SolidColorBrush(Color.FromRgb(6, 95, 45)),
             "inprogress" or "in progress" => new SolidColorBrush(Color.FromRgb(18, 62, 107)),
@@ -144,8 +144,8 @@ public class EnumDisplayConverter : IValueConverter
     {
         return value switch
         {
-            _5W2H.App.Core.Models.TaskStatus status => StatusText.Convert(status, targetType, parameter, culture),
-            _5W2H.App.Core.Models.Priority priority => PriorityText.Convert(priority, targetType, parameter, culture),
+            FiveW2H.App.Core.Models.TaskStatus status => StatusText.Convert(status, targetType, parameter, culture),
+            FiveW2H.App.Core.Models.Priority priority => PriorityText.Convert(priority, targetType, parameter, culture),
             _ => value?.ToString() ?? string.Empty
         };
     }

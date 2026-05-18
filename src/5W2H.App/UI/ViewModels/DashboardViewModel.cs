@@ -1,13 +1,13 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using _5W2H.App.Core.Models;
-using _5W2H.App.Core.Services;
-using _5W2H.App.UI.Models;
+using FiveW2H.App.Core.Models;
+using FiveW2H.App.Core.Services;
+using FiveW2H.App.UI.Models;
 using System.Collections.ObjectModel;
 using OxyPlot;
 using OxyPlot.Series;
 
-namespace _5W2H.App.UI.ViewModels;
+namespace FiveW2H.App.UI.ViewModels;
 
 /// <summary>
 /// ViewModel for the dashboard view showing statistics and charts.

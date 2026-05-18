@@ -1,6 +1,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:local="clr-namespace:_5W2H.App.UI.Converters"
+                    xmlns:local="clr-namespace:FiveW2H.App.UI.Converters"
+                    xmlns:helpers="clr-namespace:FiveW2H.App.UI.Helpers"
+                    xmlns:primitives="clr-namespace:System.Windows.Controls.Primitives;assembly=PresentationFramework"
                     xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <local:StatusColorConverter x:Key="StatusColorConverter"/>
@@ -210,7 +212,6 @@
                         </Trigger>
                         <Trigger Property="IsFocused" Value="true">
                             <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource PrimaryAccentBrush}"/>
-                            <Setter Property="BorderThickness" TargetName="border" Value="2"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
@@ -296,6 +297,10 @@
     </Style>
 
     <Style TargetType="{x:Type DatePicker}">
+        <Setter Property="helpers:DatePickerPopupHelper.AutoAlignPopup" Value="True"/>
+        <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+        <Setter Property="MinWidth" Value="0"/>
         <Setter Property="FontSize" Value="13"/>
         <Setter Property="Padding" Value="0"/>
         <Setter Property="MinHeight" Value="{StaticResource ControlMinHeight}"/>
@@ -306,21 +311,74 @@
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="SelectedDateFormat" Value="Short"/>
         <Setter Property="CalendarStyle" Value="{StaticResource DarkCalendarStyle}"/>
-        <Style.Resources>
-            <Style TargetType="{x:Type Button}">
-                <Setter Property="Background" Value="Transparent"/>
-                <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
-                <Setter Property="BorderThickness" Value="0"/>
-                <Setter Property="Padding" Value="6,0"/>
-                <Setter Property="MinWidth" Value="30"/>
-                <Setter Property="Cursor" Value="Hand"/>
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="{StaticResource SurfaceMutedBrush}"/>
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-        </Style.Resources>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type DatePicker}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{StaticResource CornerRadiusSmall}"
+                            ClipToBounds="True"
+                            SnapsToDevicePixels="True">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="32"/>
+                            </Grid.ColumnDefinitions>
+
+                            <DatePickerTextBox x:Name="PART_TextBox"
+                                               Grid.Column="0"
+                                               Margin="12,0,4,0"
+                                               HorizontalAlignment="Stretch"
+                                               Foreground="{TemplateBinding Foreground}"
+                                               Background="Transparent"
+                                               BorderThickness="0"
+                                               VerticalContentAlignment="Center"/>
+
+                            <Button x:Name="PART_Button"
+                                    Grid.Column="1"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    Cursor="Hand"
+                                    Focusable="False"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Stretch"
+                                    Width="32"
+                                    Padding="0">
+                                <TextBlock Text="&#xE787;"
+                                           FontFamily="Segoe MDL2 Assets"
+                                           FontSize="13"
+                                           Foreground="{StaticResource TextMutedBrush}"
+                                           VerticalAlignment="Center"
+                                           HorizontalAlignment="Center"/>
+                            </Button>
+
+                            <Popup x:Name="PART_Popup"
+                                   AllowsTransparency="True"
+                                   Focusable="False"
+                                   Placement="Bottom"
+                                   PlacementTarget="{Binding ElementName=border}"
+                                   PopupAnimation="Fade"
+                                   StaysOpen="False"/>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{StaticResource PrimaryAccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocusWithin" Value="True">
+                            <Setter TargetName="border" Property="BorderBrush"
+                                    Value="{StaticResource PrimaryAccentBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="border" Property="Opacity" Value="0.5"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="DarkCalendarStyle" TargetType="{x:Type Calendar}">
@@ -328,6 +386,15 @@
         <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}"/>
         <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Style.Resources>
+            <Style TargetType="{x:Type primitives:CalendarItem}">
+                <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource BorderBrush}"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+        </Style.Resources>
     </Style>
 
     <ControlTemplate x:Key="DarkComboBoxTemplate" TargetType="{x:Type ComboBox}">

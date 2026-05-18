@@ -1,4 +1,4 @@
-namespace _5W2H.App.UI.Models;
+namespace FiveW2H.App.UI.Models;
 
 /// <summary>
 /// Represents a 5W2H task in the UI model.

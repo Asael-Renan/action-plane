@@ -1,8 +1,8 @@
-using _5W2H.App.Core.Models;
+using FiveW2H.App.Core.Models;
 using Dapper;
 using System.Data.SQLite;
 
-namespace _5W2H.App.Data;
+namespace FiveW2H.App.Data;
 
 /// <summary>
 /// SQLite database context for 5W2H application.

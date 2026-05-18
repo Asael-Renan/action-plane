@@ -1,7 +1,7 @@
-<Application x:Class="_5W2H.App.App"
+<Application x:Class="FiveW2H.App.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:_5W2H.App">
+             xmlns:local="clr-namespace:FiveW2H.App">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

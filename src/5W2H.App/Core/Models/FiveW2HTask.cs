@@ -1,4 +1,4 @@
-namespace _5W2H.App.Core.Models;
+namespace FiveW2H.App.Core.Models;
 
 /// <summary>
 /// Represents a 5W2H (What, Why, Where, When, Who, How, How Much) task entity.
