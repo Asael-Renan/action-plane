@@ -25,6 +25,7 @@ public partial class MainViewModel : ObservableObject
     private readonly IFileDialogService _fileDialogService;
     private readonly IMessageDialogService _messageDialogService;
     private readonly IAppUpdateService _appUpdateService;
+    private readonly IThemeService _themeService;
 
     [ObservableProperty]
     private ObservableCollection<TaskModel> tasks = new();
@@ -122,6 +123,11 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private PlotModel timelineChartModel = new();
 
+    [ObservableProperty]
+    private bool isDarkTheme = true;
+
+    public string ThemeToggleGlyph => IsDarkTheme ? "\uE706" : "\uE708";
+
     public IReadOnlyList<Priority> Priorities { get; } = Enum.GetValues<Priority>();
     public IReadOnlyList<FiveW2H.App.Core.Models.TaskStatus> Statuses { get; } = Enum.GetValues<FiveW2H.App.Core.Models.TaskStatus>();
 
@@ -131,7 +137,8 @@ public partial class MainViewModel : ObservableObject
         IDialogService dialogService,
         IFileDialogService fileDialogService,
         IMessageDialogService messageDialogService,
-        IAppUpdateService appUpdateService)
+        IAppUpdateService appUpdateService,
+        IThemeService themeService)
     {
         _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService));
         _backupService = backupService ?? throw new ArgumentNullException(nameof(backupService));
@@ -139,6 +146,26 @@ public partial class MainViewModel : ObservableObject
         _fileDialogService = fileDialogService ?? throw new ArgumentNullException(nameof(fileDialogService));
         _messageDialogService = messageDialogService ?? throw new ArgumentNullException(nameof(messageDialogService));
         _appUpdateService = appUpdateService ?? throw new ArgumentNullException(nameof(appUpdateService));
+        _themeService = themeService ?? throw new ArgumentNullException(nameof(themeService));
+        IsDarkTheme = _themeService.IsDarkTheme;
+        _themeService.ThemeChanged += OnThemeChanged;
+    }
+
+    [RelayCommand]
+    private void ToggleTheme() => _themeService.Toggle();
+
+    partial void OnIsDarkThemeChanged(bool value)
+    {
+        OnPropertyChanged(nameof(ThemeToggleGlyph));
+    }
+
+    private void OnThemeChanged(object? sender, EventArgs e)
+    {
+        IsDarkTheme = _themeService.IsDarkTheme;
+        if (Tasks.Count > 0)
+        {
+            UpdateCharts(Tasks.ToList());
+        }
     }
 
     [RelayCommand]
@@ -588,21 +615,26 @@ public partial class MainViewModel : ObservableObject
         TimelineChartModel = BuildTimelineChart(models);
     }
 
-    private static PlotModel CreateDarkPlotModel()
+    private PlotModel CreatePlotModel()
     {
+        var textColor = IsDarkTheme ? OxyColor.FromRgb(248, 250, 252) : OxyColor.FromRgb(15, 23, 42);
         return new PlotModel
         {
             PlotAreaBorderColor = OxyColors.Transparent,
-            TextColor = OxyColor.FromRgb(248, 250, 252),
-            TitleColor = OxyColor.FromRgb(248, 250, 252),
+            TextColor = textColor,
+            TitleColor = textColor,
             Background = OxyColors.Transparent,
             PlotAreaBackground = OxyColors.Transparent
         };
     }
 
-    private static PlotModel BuildStatusDonutChart(IReadOnlyCollection<TaskModel> models)
+    private OxyColor ChartAxisTextColor => IsDarkTheme
+        ? OxyColor.FromRgb(194, 180, 163)
+        : OxyColor.FromRgb(100, 116, 139);
+
+    private PlotModel BuildStatusDonutChart(IReadOnlyCollection<TaskModel> models)
     {
-        var model = CreateDarkPlotModel();
+        var model = CreatePlotModel();
         var pieSeries = new PieSeries
         {
             StrokeThickness = 0,
@@ -632,7 +664,10 @@ public partial class MainViewModel : ObservableObject
 
         if (pieSeries.Slices.Count == 0)
         {
-            pieSeries.Slices.Add(new PieSlice("Sem dados", 1) { Fill = OxyColor.FromRgb(63, 69, 81) });
+            pieSeries.Slices.Add(new PieSlice("Sem dados", 1)
+            {
+                Fill = IsDarkTheme ? OxyColor.FromRgb(63, 69, 81) : OxyColor.FromRgb(203, 213, 225)
+            });
         }
 
         model.Series.Add(pieSeries);
@@ -640,9 +675,9 @@ public partial class MainViewModel : ObservableObject
         return model;
     }
 
-    private static PlotModel BuildPriorityColumnChart(IReadOnlyCollection<TaskModel> models)
+    private PlotModel BuildPriorityColumnChart(IReadOnlyCollection<TaskModel> models)
     {
-        var model = CreateDarkPlotModel();
+        var model = CreatePlotModel();
         var categories = new[]
         {
             nameof(Priority.Low),
@@ -658,7 +693,7 @@ public partial class MainViewModel : ObservableObject
             Maximum = 3.5,
             MajorStep = 1,
             MinorStep = 1,
-            TextColor = OxyColor.FromRgb(194, 180, 163),
+            TextColor = ChartAxisTextColor,
             TicklineColor = OxyColors.Transparent,
             AxislineColor = OxyColors.Transparent,
             LabelFormatter = value =>
@@ -677,7 +712,7 @@ public partial class MainViewModel : ObservableObject
             MinorGridlineColor = OxyColors.Transparent,
             TicklineColor = OxyColors.Transparent,
             AxislineColor = OxyColors.Transparent,
-            TextColor = OxyColor.FromRgb(194, 180, 163)
+            TextColor = ChartAxisTextColor
         };
 
         var barSeries = new RectangleBarSeries
@@ -701,9 +736,9 @@ public partial class MainViewModel : ObservableObject
         return model;
     }
 
-    private static PlotModel BuildResponsibleChart(IReadOnlyCollection<TaskModel> models)
+    private PlotModel BuildResponsibleChart(IReadOnlyCollection<TaskModel> models)
     {
-        var model = CreateDarkPlotModel();
+        var model = CreatePlotModel();
         var topResponsible = models
             .GroupBy(task => string.IsNullOrWhiteSpace(task.Who) ? "Nao informado" : task.Who)
             .OrderByDescending(group => group.Count())
@@ -715,7 +750,7 @@ public partial class MainViewModel : ObservableObject
             Position = AxisPosition.Left,
             GapWidth = 12,
             IsTickCentered = true,
-            TextColor = OxyColor.FromRgb(194, 180, 163),
+            TextColor = ChartAxisTextColor,
             TicklineColor = OxyColors.Transparent,
             AxislineColor = OxyColors.Transparent
         };
@@ -734,7 +769,7 @@ public partial class MainViewModel : ObservableObject
             MinorGridlineColor = OxyColors.Transparent,
             TicklineColor = OxyColors.Transparent,
             AxislineColor = OxyColors.Transparent,
-            TextColor = OxyColor.FromRgb(194, 180, 163)
+            TextColor = ChartAxisTextColor
         };
 
         var barSeries = new BarSeries
@@ -755,9 +790,9 @@ public partial class MainViewModel : ObservableObject
         return model;
     }
 
-    private static PlotModel BuildTimelineChart(IReadOnlyCollection<TaskModel> models)
+    private PlotModel BuildTimelineChart(IReadOnlyCollection<TaskModel> models)
     {
-        var model = CreateDarkPlotModel();
+        var model = CreatePlotModel();
         var orderedGroups = models
             .GroupBy(task => new DateTime(task.When.Year, task.When.Month, 1))
             .OrderBy(group => group.Key)
@@ -767,7 +802,7 @@ public partial class MainViewModel : ObservableObject
         {
             Position = AxisPosition.Bottom,
             GapWidth = 0.6,
-            TextColor = OxyColor.FromRgb(194, 180, 163)
+            TextColor = ChartAxisTextColor
         };
 
         var valueAxis = new LinearAxis
@@ -775,7 +810,7 @@ public partial class MainViewModel : ObservableObject
             Position = AxisPosition.Left,
             MinimumPadding = 0,
             AbsoluteMinimum = 0,
-            TextColor = OxyColor.FromRgb(194, 180, 163)
+            TextColor = ChartAxisTextColor
         };
 
         var lineSeries = new LineSeries

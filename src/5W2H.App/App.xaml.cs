@@ -55,6 +55,7 @@ public partial class App : Application
         services.AddScoped<IFileDialogService, FileDialogService>();
         services.AddScoped<IMessageDialogService, MessageDialogService>();
         services.AddSingleton<IAppUpdateService, VelopackAppUpdateService>();
+        services.AddSingleton<IThemeService, ThemeService>();
 
         // Register ViewModels
         services.AddScoped<MainViewModel>();
@@ -63,6 +64,8 @@ public partial class App : Application
         services.AddScoped<MainWindow>();
 
         ServiceProvider = services.BuildServiceProvider();
+
+        ServiceProvider.GetRequiredService<IThemeService>().Initialize();
 
         // Initialize database
         try
