@@ -815,11 +815,11 @@ public partial class MainViewModel : ObservableObject
 
         var lineSeries = new LineSeries
         {
-            Color = OxyColor.FromRgb(76, 175, 80),
+            Color = OxyColor.FromRgb(34, 197, 94),
             StrokeThickness = 3,
             MarkerType = MarkerType.Circle,
             MarkerSize = 4,
-            MarkerFill = OxyColor.FromRgb(76, 175, 80)
+            MarkerFill = OxyColor.FromRgb(34, 197, 94)
         };
 
         if (orderedGroups.Count == 0)
@@ -845,21 +845,21 @@ public partial class MainViewModel : ObservableObject
 
     private static OxyColor GetStatusColor(string status) => status switch
     {
-        nameof(TaskStatus.Completed) => OxyColor.FromRgb(32, 169, 91),
-        nameof(TaskStatus.InProgress) => OxyColor.FromRgb(28, 82, 184),
-        nameof(TaskStatus.OnHold) => OxyColor.FromRgb(41, 182, 246),
-        nameof(TaskStatus.Cancelled) => OxyColor.FromRgb(158, 158, 158),
-        _ => OxyColor.FromRgb(216, 146, 10)
+        nameof(TaskStatus.Completed) => OxyColor.FromRgb(34, 197, 94),      // Verde vibrante
+        nameof(TaskStatus.InProgress) => OxyColor.FromRgb(59, 130, 246),    // Azul
+        nameof(TaskStatus.OnHold) => OxyColor.FromRgb(251, 146, 60),        // Laranja
+        nameof(TaskStatus.Cancelled) => OxyColor.FromRgb(239, 68, 68),      // Vermelho
+        _ => OxyColor.FromRgb(148, 163, 184)                                // Cinza
     };
 
     private static OxyColor GetPriorityColor(string priority) => priority switch
     {
-        nameof(Priority.Critical) => OxyColor.FromRgb(176, 18, 21),
-        nameof(Priority.High) => OxyColor.FromRgb(216, 93, 5),
-        nameof(Priority.Medium) => OxyColor.FromRgb(202, 138, 4),
-        _ => OxyColor.FromRgb(32, 169, 91)
+        nameof(Priority.Critical) => OxyColor.FromRgb(220, 38, 38),     // Vermelho intenso
+        nameof(Priority.High) => OxyColor.FromRgb(249, 115, 22),        // Laranja
+        nameof(Priority.Medium) => OxyColor.FromRgb(234, 179, 8),       // Amarelo
+        _ => OxyColor.FromRgb(34, 197, 94)                              // Verde
     };
-
+    
     private static string ToStatusLabel(string status) => status switch
     {
         nameof(TaskStatus.Completed) => "Concluido",

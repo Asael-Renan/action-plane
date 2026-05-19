@@ -1,197 +1,131 @@
-# AGENTS.md — 5W2H Management
+# AGENTS.md - 5W2H Management
 
-Guia operacional para agentes. Prosa curta (caveman **lite**). Código/commits/PRs: linguagem normal.
+Guia curto para agentes. Default: **caveman full**. Codigo, commits, PRs e erros: linguagem normal.
 
-## Snapshot
+## Projeto
 
 | Campo | Valor |
-|-------|--------|
-| App | Desktop WPF — ações 5W2H (CRUD, filtros, backup, import/export, gráficos) |
-| Stack | `.NET 8` · WPF · MVVM Toolkit · SQLite + Dapper · OxyPlot · DI · Velopack |
-| Layout | Monolito modular → `src/5W2H.App` + `tests/5W2H.Tests` |
-| Não recriar | `Domain/` · `Application/` · `Infrastructure/` · `Presentation.WPF` |
+|-------|-------|
+| App | WPF desktop para acoes 5W2H |
+| Stack | `.NET 8` · WPF · CommunityToolkit.Mvvm · SQLite/Dapper · OxyPlot · DI · Velopack |
+| App project | `src/5W2H.App.csproj` |
+| Test project | `tests/5W2H.Tests.csproj` |
+| Namespace | `FiveW2H.App` |
 
-## Fonte de verdade
+Fonte de verdade: codigo, `.csproj`, `.sln`, `.editorconfig`, `Directory.Build.props`, `Directory.Packages.props`.
 
-| Prioridade | Regra |
-|------------|--------|
-| 1 | Código + `.csproj` > docs |
-| 2 | Commits úteis: `dcb84f1` · `2cd4243` (simplificação arquitetura) |
+## Ferramentas
 
-## Comunicação (caveman)
+| Ferramenta | Regra |
+|------------|-------|
+| Serena MCP | Usar sempre que possivel para contexto local, simbolos, referencias e memorias |
+| Context7 | Usar para docs atuais de library, framework, SDK, API, CLI ou cloud |
+| RTK | Usar se estiver disponivel no contexto; se nao estiver, declarar ausencia |
 
-| Nível | Quando | Estilo |
-|-------|--------|--------|
-| **lite** (default aqui) | Handoff, status, listas | Sem filler; frases curtas; tabelas > parágrafo |
-| **full** | User pede `/caveman` ou "menos tokens" | Sem artigos; fragmentos OK; termos técnicos exatos |
-| **ultra** | User pede `/caveman ultra` | Máxima compressão; setas `→`; abrev. só em prosa |
-| **off** | Segurança, ação irreversível, passos ambíguos | Prosa clara; retomar caveman depois |
+Context7:
 
-Código, diff, mensagens de erro, nomes de API/símbolo: **nunca** abreviar.
+1. `npx ctx7@latest library <nome-oficial> "<pergunta completa>"`
+2. Escolher melhor ID `/org/project`
+3. `npx ctx7@latest docs <libraryId> "<pergunta completa>"`
 
-## Fluxo SERENA (não trivial)
+Se Context7 falhar por quota: citar `npx ctx7@latest login` ou `CONTEXT7_API_KEY`. Se falhar por rede/DNS no sandbox: rerodar fora do sandbox.
 
-| # | Ação |
-|---|------|
-| 1 | Ativar projeto SERENA |
-| 2 | `check_onboarding_performed` |
-| 3 | Ler memórias: `project_overview` · `style_and_conventions` · `suggested_commands` · `task_completion_checklist` |
-| 4 | Símbolos primeiro: `get_symbols_overview` → `find_symbol` → `find_referencing_symbols` (antes de mudar contrato público) |
-| 5 | `search_for_pattern` para XAML / Markdown / nome incerto |
-| 6 | Arquivo inteiro só se símbolo não bastar |
+## Serena
 
-SERENA indisponível → declarar no handoff antes de seguir.
+Fluxo padrao:
+
+1. `check_onboarding_performed`
+2. Ler memorias relevantes
+3. Usar simbolos antes de arquivo inteiro
+4. Usar referencias antes de mudar contrato publico
+5. Atualizar memoria so para fato duravel do projeto
+
+Memorias esperadas: `project_overview`, `style_and_conventions`, `suggested_commands`, `task_completion_checklist`.
 
 ## Estrutura
 
 ```text
-src/5W2H.App/
+src/
+|- 5W2H.App.csproj
+|- App.xaml
 |- Core/Models/     Core/Services/
 |- Data/
-|- Resources/       (ModernTheme.xaml)
-`- UI/Converters/ Models/ Services/ ViewModels/ Views/
-tests/5W2H.Tests/
+|- Resources/
+`- UI/Converters/ Helpers/ Models/ Services/ ViewModels/ Views/
+
+tests/
+|- 5W2H.Tests.csproj
+|- BackupServiceTests.cs
+`- TaskServiceTests.cs
 ```
 
-## Limites (camada → responsabilidade)
+## Regras de codigo
 
-| Pasta | Pode | Não |
-|-------|------|-----|
-| `Core/Models` | Entidades, enums | UI, WPF |
-| `Core/Services` | Regras, DTOs, `TaskService`, `BackupService`, import/export | UI |
-| `Data` | SQLite, Dapper, repos | Lógica de tela |
-| `UI/ViewModels` | Estado MVVM, comandos | SQL direto |
-| `UI/Views` | XAML, code-behind mínimo | Regras de negócio |
-| `UI/Services` | Dialogs, arquivos, mensagens | — |
-| `UI/Converters` | Conversores | — |
-| `tests/` | xUnit, AAA, Moq se fizer sentido | — |
+| Area | Regra |
+|------|-------|
+| `Core` | Modelos, enums, regras, DTOs, servicos |
+| `Data` | SQLite, Dapper, repositorios |
+| `UI/ViewModels` | Estado MVVM e comandos |
+| `UI/Views` | XAML e code-behind minimo |
+| `UI/Services` | Dialogos, arquivos, temas, updates |
+| `tests` | xUnit; testes deterministas |
 
-**Proibido sem motivo claro:** EF Core (persistência) · nova UI framework · nova lib de gráficos · banco no ViewModel · controle WPF em `Core`.
+Convenções:
 
-## Convenções
+- C# nullable habilitado
+- Async com sufixo `Async`
+- DI por construtor + `ArgumentNullException`
+- Campos privados `_camelCase`
+- Strings default `string.Empty`
+- ViewModels `partial` + `ObservableObject` + `[ObservableProperty]` + `[RelayCommand]`
+- Codigo em ingles; UI em portugues
 
-| Tópico | Regra |
-|--------|--------|
-| Namespace | `_5W2H.App` |
-| Nullability | Habilitado |
-| Async | Sufixo `Async` |
-| DI | Construtor + `ArgumentNullException` |
-| Campos | `_camelCase` |
-| Strings default | `string.Empty` |
-| ViewModels | `partial` · `ObservableObject` · `[ObservableProperty]` · `[RelayCommand]` |
-| Nomes código | Inglês |
-| Texto UI | Português (salvo pedido contrário) |
-| Docs XML | Tipos/membros públicos importantes em `Core` |
+Nao introduzir sem motivo claro: EF Core, nova UI framework, nova lib de graficos, SQL em ViewModel, WPF em `Core`.
 
-## Roteamento rápido
+## Mudancas
 
-| Caminho | Foco |
-|---------|------|
-| `AGENTS.md` `README.md` `ARCHITECTURE.md` `BUILD.md` `DECISIONS.md` `*.sln` `*.csproj` | Docs/build alinhados ao projeto único |
-| `src/5W2H.App/Core/**` | Regras, DTOs, serviços |
-| `src/5W2H.App/Data/**` | SQL parametrizado, repos |
-| `src/5W2H.App/UI/**` | Bindings, comandos, OxyPlot, tema |
-| `tests/**` | Testes deterministas |
+- Checar `git status` antes de editar
+- Nao reverter mudancas do usuario
+- Escopo pequeno; sem refactor lateral
+- Contrato publico mudou: atualizar call sites
+- Estrutura duravel mudou: atualizar AGENTS.md e memorias Serena
 
-## Disciplina de mudança
-
-- Checar worktree antes de editar
-- Não reverter mudanças do usuário
-- Escopo pequeno; atualizar call sites se contrato público mudar
-- Código ≠ doc → confiar no código
-- Memória SERENA só para fato durável do projeto
-
-## Verificação
+## Validacao
 
 | Escopo | Comando |
 |--------|---------|
-| C# / serviços | `dotnet build` + `dotnet test` |
-| XAML / UI | `dotnet build`; `dotnet run` se viável |
-| Só testes | `dotnet test` |
-| Release | `dotnet publish -c Release src/5W2H.App/5W2H.App.csproj -o publish` |
-| Só docs | Revisar caminhos e comandos |
+| Codigo | `dotnet build` + `dotnet test` |
+| UI/XAML | `dotnet build`; `dotnet run --project src/5W2H.App.csproj` se viavel |
+| Release | `dotnet publish -c Release src/5W2H.App.csproj -o publish` |
+| Docs | Revisar paths e comandos |
 
-```powershell
-dotnet restore
-dotnet build
-dotnet test
-dotnet run --project src/5W2H.App/5W2H.App.csproj
-dotnet publish -c Release src/5W2H.App/5W2H.App.csproj -o publish
-```
+## Handoff
 
-Não validou → campo `validacao` no handoff = `nao_executada` + motivo.
-
----
-
-## Saída obrigatória (handoff)
-
-Ao terminar tarefa (ou parar por bloqueio), responder com **este bloco preenchido**. Copiar estrutura; linhas vazias = omitir seção.
+Responder sempre ao finalizar:
 
 ```markdown
 ## Handoff
 
 | Campo | Valor |
-|-------|--------|
-| status | `ok` \| `parcial` \| `bloqueado` |
-| pedido | (1 linha — o que user pediu) |
-| feito | (bullets curtos — mudanças reais) |
-| arquivos | `path` · `path` |
-| contrato | `sem_mudanca` \| `mudou` → listar símbolos/call sites atualizados |
-| serena | `ok` \| `indisponivel` |
-| caveman | `lite` \| `full` \| `ultra` \| `off` |
+|-------|-------|
+| status | ok/parcial/bloqueado |
+| pedido | ... |
+| feito | ... |
+| arquivos | `path` |
+| contrato | sem_mudanca/mudou |
+| serena | ok/indisponivel |
+| caveman | full/lite/ultra/off |
 
-### Validação
-
-| Comando | Resultado |
-|---------|-----------|
-| `dotnet build` | `pass` \| `fail` \| `skip` |
-| `dotnet test` | `pass` \| `fail` \| `skip` (+ N passed / M failed se rodou) |
-| `dotnet run` | `pass` \| `fail` \| `skip` |
-| publish | `pass` \| `fail` \| `skip` |
-
-### Riscos / pendências
-
-- (ou `nenhum`)
-
-### Próximo (se parcial/bloqueado)
-
-- (ação concreta)
-```
-
-### Regras do handoff
-
-| Regra | Detalhe |
-|-------|---------|
-| Dados > narrativa | Tabelas e paths literais; evitar parágrafo longo |
-| Falha | Colar trecho relevante do erro (não resumir de memória) |
-| UI | Se tocou XAML: citar binding/comando verificado ou `nao_verificado_runtime` |
-| Escopo | Listar só arquivos tocados ou lidos com impacto na decisão |
-
-### Exemplo (ok)
-
-```markdown
-## Handoff
-
-| Campo | Valor |
-|-------|--------|
-| status | ok |
-| pedido | Corrigir teste BackupService |
-| feito | Ajuste mock path · assert async |
-| arquivos | `tests/5W2H.Tests/BackupServiceTests.cs` |
-| contrato | sem_mudanca |
-| serena | ok |
-| caveman | lite |
-
-### Validação
+### Validacao
 
 | Comando | Resultado |
 |---------|-----------|
-| `dotnet build` | pass |
-| `dotnet test` | pass — 42 passed, 0 failed |
-| `dotnet run` | skip |
-| publish | skip |
+| `dotnet build` | pass/fail/skip |
+| `dotnet test` | pass/fail/skip |
+| `dotnet run` | pass/fail/skip |
+| publish | pass/fail/skip |
 
-### Riscos / pendências
+### Riscos / pendencias
 
 - nenhum
 ```

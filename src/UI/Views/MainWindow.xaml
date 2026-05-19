@@ -456,7 +456,8 @@
                     <Border Grid.Row="4"
                             Style="{StaticResource SectionCardStyle}"
                             Padding="0"
-                            ClipToBounds="True">
+                            ClipToBounds="True"
+                            CornerRadius="12">
                         <DataGrid ItemsSource="{Binding Tasks}"
                                   SelectedItem="{Binding SelectedTask}"
                                   Style="{StaticResource DarkDataGridStyle}"
