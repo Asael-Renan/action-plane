@@ -55,11 +55,11 @@ public class PriorityColorConverter : IValueConverter
         var priority = value?.ToString() ?? "";
         return priority.ToLowerInvariant() switch
         {
-            "critical" => new SolidColorBrush(Color.FromRgb(92, 16, 16)),
-            "high" => new SolidColorBrush(Color.FromRgb(92, 45, 10)),
-            "medium" => new SolidColorBrush(Color.FromRgb(76, 60, 9)),
-            "low" => new SolidColorBrush(Color.FromRgb(8, 87, 39)),
-            _ => new SolidColorBrush(Color.FromRgb(42, 48, 58))
+            "critical" => new SolidColorBrush(Color.FromRgb(220, 38, 38)),
+            "high" => new SolidColorBrush(Color.FromRgb(249, 115, 22)),
+            "medium" => new SolidColorBrush(Color.FromRgb(234, 179, 8)),
+            "low" => new SolidColorBrush(Color.FromRgb(34, 197, 94)),
+            _ => new SolidColorBrush(Color.FromRgb(34, 197, 94))
         };
     }
 
@@ -76,12 +76,12 @@ public class StatusColorConverter : IValueConverter
         var status = value?.ToString() ?? "";
         return status.ToLowerInvariant() switch
         {
-            "completed" => new SolidColorBrush(Color.FromRgb(6, 95, 45)),
-            "inprogress" or "in progress" => new SolidColorBrush(Color.FromRgb(18, 62, 107)),
-            "pending" => new SolidColorBrush(Color.FromRgb(86, 69, 10)),
-            "onhold" or "on hold" => new SolidColorBrush(Color.FromRgb(73, 54, 16)),
-            "cancelled" => new SolidColorBrush(Color.FromRgb(63, 69, 81)),
-            _ => new SolidColorBrush(Color.FromRgb(18, 62, 107))
+            "completed" => new SolidColorBrush(Color.FromRgb(34, 197, 94)),
+            "inprogress" or "in progress" => new SolidColorBrush(Color.FromRgb(59, 130, 246)),
+            "pending" => new SolidColorBrush(Color.FromRgb(148, 163, 184)),
+            "onhold" or "on hold" => new SolidColorBrush(Color.FromRgb(251, 146, 60)),
+            "cancelled" => new SolidColorBrush(Color.FromRgb(239, 68, 68)),
+            _ => new SolidColorBrush(Color.FromRgb(148, 163, 184))
         };
     }
 
