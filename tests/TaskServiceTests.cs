@@ -19,7 +19,7 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public async Task CreateTaskAsync_WithValidDto_ReturnsTaskDto()
+    public async Task CreateTaskAsyncWithValidDtoReturnsTaskDto()
     {
         // Arrange
         var createDto = new CreateFiveW2HTaskDto
@@ -49,7 +49,7 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public async Task CreateTaskAsync_WithMissingWhat_ThrowsException()
+    public async Task CreateTaskAsyncWithMissingWhatThrowsException()
     {
         // Arrange
         var createDto = new CreateFiveW2HTaskDto
@@ -69,7 +69,7 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public async Task CreateTaskAsync_WithNegativeCost_ThrowsException()
+    public async Task CreateTaskAsyncWithNegativeCostThrowsException()
     {
         // Arrange
         var createDto = new CreateFiveW2HTaskDto
@@ -89,7 +89,7 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public async Task GetTaskAsync_WithValidId_ReturnsTaskDto()
+    public async Task GetTaskAsyncWithValidIdReturnsTaskDto()
     {
         // Arrange
         var task = new FiveW2HTask
@@ -116,7 +116,7 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public async Task GetTaskAsync_WithInvalidId_ReturnsNull()
+    public async Task GetTaskAsyncWithInvalidIdReturnsNull()
     {
         // Arrange
         _mockRepository
@@ -131,7 +131,7 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public async Task DeleteTaskAsync_WithValidId_ReturnsTrue()
+    public async Task DeleteTaskAsyncWithValidIdReturnsTrue()
     {
         // Arrange
         _mockRepository
@@ -147,7 +147,7 @@ public class TaskServiceTests
     }
 
     [Fact]
-    public async Task GetDashboardSummaryAsync_ReturnsSummaryDto()
+    public async Task GetDashboardSummaryAsyncReturnsSummaryDto()
     {
         // Arrange
         var tasks = new[]
@@ -176,7 +176,7 @@ public class TaskServiceTests
 public class FiveW2HTaskTests
 {
     [Fact]
-    public void FiveW2HTask_IsValid_WithValidData_ReturnsTrue()
+    public void FiveW2HTaskIsValidWithValidDataReturnsTrue()
     {
         // Arrange
         var task = new FiveW2HTask
@@ -196,7 +196,7 @@ public class FiveW2HTaskTests
     }
 
     [Fact]
-    public void FiveW2HTask_IsValid_WithMissingWhat_ReturnsFalse()
+    public void FiveW2HTaskIsValidWithMissingWhatReturnsFalse()
     {
         // Arrange
         var task = new FiveW2HTask
@@ -216,7 +216,7 @@ public class FiveW2HTaskTests
     }
 
     [Fact]
-    public void FiveW2HTask_IsValid_WithNegativeHowMuch_ReturnsFalse()
+    public void FiveW2HTaskIsValidWithNegativeHowMuchReturnsFalse()
     {
         // Arrange
         var task = new FiveW2HTask
@@ -236,7 +236,7 @@ public class FiveW2HTaskTests
     }
 
     [Fact]
-    public void FiveW2HTask_DefaultStatus_IsPending()
+    public void FiveW2HTaskDefaultStatusIsPending()
     {
         // Arrange & Act
         var task = new FiveW2HTask();
@@ -246,7 +246,7 @@ public class FiveW2HTaskTests
     }
 
     [Fact]
-    public void FiveW2HTask_DefaultPriority_IsMedium()
+    public void FiveW2HTaskDefaultPriorityIsMedium()
     {
         // Arrange & Act
         var task = new FiveW2HTask();

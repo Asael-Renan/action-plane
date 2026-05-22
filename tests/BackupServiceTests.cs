@@ -20,7 +20,7 @@ public class BackupServiceTests
     }
 
     [Fact]
-    public async Task ExportToCsvAsync_WithTasks_WritesCsvContent()
+    public async Task ExportToCsvAsyncWithTasksWritesCsvContent()
     {
         var tasks = new[]
         {
@@ -59,7 +59,7 @@ public class BackupServiceTests
     }
 
     [Fact]
-    public async Task ExportToJsonAsync_WithTasks_ReturnsJsonString()
+    public async Task ExportToJsonAsyncWithTasksReturnsJsonString()
     {
         var tasks = new[]
         {
