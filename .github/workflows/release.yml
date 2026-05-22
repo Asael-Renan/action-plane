@@ -30,9 +30,6 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore
-        run: dotnet restore 5W2H-Management.sln
-
       - name: Resolve version
         id: version
         shell: pwsh
@@ -47,6 +44,9 @@ jobs:
             $inputVersion
           }
           "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Restore
+        run: dotnet restore 5W2H-Management.sln --runtime win-x64 -p:Configuration=Release -p:SelfContained=true -p:PublishReadyToRun=true -p:Version=${{ steps.version.outputs.version }}
 
       - name: Build
         run: dotnet build 5W2H-Management.sln --configuration Release --no-restore -p:Version=${{ steps.version.outputs.version }}
