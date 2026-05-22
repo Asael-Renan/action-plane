@@ -1,6 +1,6 @@
 using FiveW2H.App.Core.Models;
 
-namespace FiveW2H.App.Core.Services;
+namespace FiveW2H.App.Application;
 
 /// <summary>
 /// Data Transfer Object for displaying a 5W2H task in the UI.

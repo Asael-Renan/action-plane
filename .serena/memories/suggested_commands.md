@@ -8,8 +8,8 @@ Core .NET commands:
 - `dotnet build -c Release`
 - `dotnet test`
 - `dotnet test --verbosity detailed`
-- `dotnet run --project src/5W2H.App/5W2H.App.csproj`
-- `dotnet publish -c Release src/5W2H.App/5W2H.App.csproj -o publish`
+- `dotnet run --project src/5W2H.App.csproj`
+- `dotnet publish -c Release src/5W2H.App.csproj -o publish`
 - `dotnet clean`
 - `dotnet nuget locals all --clear`
 
@@ -25,7 +25,7 @@ Useful Windows/PowerShell commands:
 
 Typical workflows:
 - Restore/build/test: `dotnet restore`, `dotnet build`, `dotnet test`
-- Run app: `dotnet run --project src/5W2H.App/5W2H.App.csproj`
-- Produce distributable build: `dotnet publish -c Release src/5W2H.App/5W2H.App.csproj -o publish`
+- Run app: `dotnet run --project src/5W2H.App.csproj`
+- Produce distributable build: `dotnet publish -c Release src/5W2H.App.csproj -o publish`
 
 No dedicated formatter or linter config was found in the inspected project files/docs. Standard .NET formatting commands may still be usable if added later.

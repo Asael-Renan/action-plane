@@ -1,4 +1,4 @@
-using FiveW2H.App.Core.Services;
+using FiveW2H.App.Application;
 using FiveW2H.App.UI.Models;
 using FiveW2H.App.UI.ViewModels;
 using FiveW2H.App.UI.Views;
@@ -21,7 +21,7 @@ public class DialogService : IDialogService
         var window = new EditItemWindow
         {
             DataContext = viewModel,
-            Owner = Application.Current.Windows.OfType<Window>().FirstOrDefault(window => window.IsActive)
+            Owner = System.Windows.Application.Current.Windows.OfType<Window>().FirstOrDefault(window => window.IsActive)
         };
 
         viewModel.CloseRequested += result =>

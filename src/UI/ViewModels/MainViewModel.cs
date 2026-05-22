@@ -1,8 +1,10 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using System.Globalization;
+using FiveW2H.App.Application;
 using FiveW2H.App.Core.Models;
-using FiveW2H.App.Core.Services;
+using FiveW2H.App.Infrastructure.Settings;
+using FiveW2H.App.Infrastructure.Updates;
 using FiveW2H.App.UI.Models;
 using FiveW2H.App.UI.Services;
 using System.Collections.ObjectModel;

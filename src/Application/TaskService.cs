@@ -2,7 +2,7 @@ using FiveW2H.App.Core.Models;
 using FiveW2H.App.Data;
 using TaskStatus = FiveW2H.App.Core.Models.TaskStatus;
 
-namespace FiveW2H.App.Core.Services;
+namespace FiveW2H.App.Application;
 
 /// <summary>
 /// Application service for managing 5W2H tasks.

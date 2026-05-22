@@ -10,7 +10,7 @@ Before finishing:
 - Check XAML bindings and command names against view models when UI changed
 - Keep async names with `Async` suffix
 - Keep public/core XML docs reasonable when contracts change
-- Keep placement consistent: `src/Core`, `src/Data`, `src/UI`, `src/Resources`, `tests`
+- Keep placement consistent: `src/Core`, `src/Application`, `src/Data`, `src/Infrastructure`, `src/UI`, `src/Resources`, `tests`
 - Avoid stale docs; confirm against real repo layout
 
 If validation cannot run, report it in handoff.

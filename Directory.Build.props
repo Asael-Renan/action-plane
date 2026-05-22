@@ -7,8 +7,4 @@
     <AnalysisLevel>latest-recommended</AnalysisLevel>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(MSBuildProjectName)' == '5W2H.Tests'">
-    <IsPackable>false</IsPackable>
-  </PropertyGroup>
 </Project>

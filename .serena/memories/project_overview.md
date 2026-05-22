@@ -2,14 +2,16 @@
 
 Purpose: Windows desktop application for managing 5W2H tasks (What, Why, Where, When, Who, How, How Much) with CRUD flows, filtering, local persistence, import/export, and dashboard charts.
 
-Actual repo shape: a single WPF app project at `src/5W2H.App` plus one xUnit test project at `tests/5W2H.Tests`.
+Actual repo shape: a single WPF app project at `src/5W2H.App.csproj` plus one xUnit test project at `tests/5W2H.Tests.csproj`.
 
 Current code structure:
-- `src/5W2H.App/Core`: business models and services (`FiveW2HTask`, enums, `TaskService`, `BackupService`, DTOs)
-- `src/5W2H.App/Data`: SQLite/Dapper persistence (`AppDbContext`, `TaskRepository`)
-- `src/5W2H.App/UI`: WPF MVVM presentation (`Views`, `ViewModels`, `Models`, `Services`, `Converters`)
-- `src/5W2H.App/Resources`: theme XAML
-- `tests/5W2H.Tests`: unit tests for service and backup logic
+- `src/Core`: pure business models and rules (`FiveW2HTask`, enums)
+- `src/Application`: application services, DTOs, and service contracts (`TaskService`, DTOs, `IBackupService`)
+- `src/Data`: SQLite/Dapper persistence (`AppDbContext`, `TaskRepository`)
+- `src/Infrastructure`: external implementations for import/export, settings, and updates (`BackupService`, `ThemeService`, `VelopackAppUpdateService`)
+- `src/UI`: WPF MVVM presentation (`Views`, `ViewModels`, `Models`, `Services`, `Converters`)
+- `src/Resources`: theme XAML
+- `tests`: unit tests for service and backup logic
 
 Tech stack confirmed from project configuration:
 - .NET 8 (`net8.0-windows`)
@@ -28,4 +30,4 @@ Configuration notes:
 - NuGet versions are centralized in `Directory.Packages.props`
 - Repo-wide formatting and code style live in `.editorconfig`
 - Release config is self-contained for `win-x64`
-- Main entrypoint for running is `src/5W2H.App/5W2H.App.csproj`
+- Main entrypoint for running is `src/5W2H.App.csproj`

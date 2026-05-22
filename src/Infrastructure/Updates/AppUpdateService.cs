@@ -2,7 +2,7 @@ using System.Reflection;
 using Velopack;
 using Velopack.Sources;
 
-namespace FiveW2H.App.UI.Services;
+namespace FiveW2H.App.Infrastructure.Updates;
 
 public interface IAppUpdateService
 {

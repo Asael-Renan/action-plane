@@ -1,11 +1,14 @@
 name: Release
 
 on:
+  push:
+    branches:
+      - release
   workflow_dispatch:
     inputs:
       version:
-        description: "SemVer version to publish, for example 1.0.1"
-        required: true
+        description: "SemVer version to publish, for example 1.0.1. If empty, uses major.minor.run_number."
+        required: false
         type: string
 
 permissions:
@@ -30,14 +33,29 @@ jobs:
       - name: Restore
         run: dotnet restore 5W2H-Management.sln
 
+      - name: Resolve version
+        id: version
+        shell: pwsh
+        run: |
+          [xml]$project = Get-Content src/5W2H.App.csproj
+          $baseVersion = ($project.Project.PropertyGroup | Where-Object { $_.Version } | Select-Object -First 1).Version
+          $inputVersion = "${{ github.event.inputs.version || '' }}"
+          $version = if ([string]::IsNullOrWhiteSpace($inputVersion)) {
+            $base = [System.Version]$baseVersion
+            "$($base.Major).$($base.Minor).${{ github.run_number }}"
+          } else {
+            $inputVersion
+          }
+          "version=$version" >> $env:GITHUB_OUTPUT
+
       - name: Build
-        run: dotnet build 5W2H-Management.sln --configuration Release --no-restore -p:Version=${{ inputs.version }}
+        run: dotnet build 5W2H-Management.sln --configuration Release --no-restore -p:Version=${{ steps.version.outputs.version }}
 
       - name: Test
-        run: dotnet test 5W2H-Management.sln --configuration Release --no-restore -p:Version=${{ inputs.version }}
+        run: dotnet test 5W2H-Management.sln --configuration Release --no-restore -p:Version=${{ steps.version.outputs.version }}
 
       - name: Publish app
-        run: dotnet publish src/5W2H.App/5W2H.App.csproj --configuration Release --runtime win-x64 --self-contained true --no-restore -p:Version=${{ inputs.version }} -o publish
+        run: dotnet publish src/5W2H.App.csproj --configuration Release --runtime win-x64 --self-contained true --no-restore -p:Version=${{ steps.version.outputs.version }} -o publish
 
       - name: Install Velopack CLI
         run: dotnet tool install --global vpk --version 0.0.1298
@@ -55,7 +73,7 @@ jobs:
         run: >
           vpk pack
           --packId 5W2H-Management
-          --packVersion ${{ inputs.version }}
+          --packVersion ${{ steps.version.outputs.version }}
           --packDir publish
           --mainExe 5W2H-Management.exe
           --outputDir Releases
@@ -70,5 +88,5 @@ jobs:
           --token "${{ secrets.GITHUB_TOKEN }}"
           --outputDir Releases
           --publish
-          --releaseName "5W2H Management ${{ inputs.version }}"
-          --tag "v${{ inputs.version }}"
+          --releaseName "5W2H Management ${{ steps.version.outputs.version }}"
+          --tag "v${{ steps.version.outputs.version }}"

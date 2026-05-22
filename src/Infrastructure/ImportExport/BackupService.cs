@@ -1,3 +1,4 @@
+using FiveW2H.App.Application;
 using FiveW2H.App.Core.Models;
 using FiveW2H.App.Data;
 using System.Globalization;
@@ -6,18 +7,7 @@ using System.Text;
 using System.Text.Json;
 using TaskStatus = FiveW2H.App.Core.Models.TaskStatus;
 
-namespace FiveW2H.App.Core.Services;
-
-/// <summary>
-/// Service for import/export and backup operations.
-/// </summary>
-public interface IBackupService
-{
-    Task ExportCsvAsync(string filePath, IEnumerable<FiveW2HTaskDto> tasks);
-    Task<ImportResultDto> ImportCsvAsync(string filePath);
-    Task<string> ExportToJsonAsync(IEnumerable<FiveW2HTask> tasks);
-    Task ExportToFileAsync(IEnumerable<FiveW2HTask> tasks, string filePath, string format);
-}
+namespace FiveW2H.App.Infrastructure.ImportExport;
 
 /// <summary>
 /// Service for managing 5W2H task backups and data transfers.

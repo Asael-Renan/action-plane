@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using FiveW2H.App.Core.Models;
-using FiveW2H.App.Core.Services;
+using FiveW2H.App.Application;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using FiveW2H.App.UI.Models;

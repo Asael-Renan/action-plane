@@ -1,5 +1,8 @@
-using FiveW2H.App.Core.Services;
+using FiveW2H.App.Application;
 using FiveW2H.App.Data;
+using FiveW2H.App.Infrastructure.ImportExport;
+using FiveW2H.App.Infrastructure.Settings;
+using FiveW2H.App.Infrastructure.Updates;
 using FiveW2H.App.UI.Services;
 using FiveW2H.App.UI.ViewModels;
 using FiveW2H.App.UI.Views;
@@ -10,7 +13,7 @@ using Velopack;
 
 namespace FiveW2H.App;
 
-public partial class App : Application
+public partial class App : System.Windows.Application
 {
     public IServiceProvider ServiceProvider { get; private set; } = null!;
 
@@ -91,4 +94,3 @@ public partial class App : Application
         }
     }
 }
-

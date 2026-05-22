@@ -2,7 +2,7 @@ using System.IO;
 using System.Text.Json;
 using System.Windows;
 
-namespace FiveW2H.App.UI.Services;
+namespace FiveW2H.App.Infrastructure.Settings;
 
 public interface IThemeService
 {
@@ -45,13 +45,13 @@ public sealed class ThemeService : IThemeService
 
     public void ApplyTheme(bool isDark)
     {
-        if (Application.Current is null)
+        if (System.Windows.Application.Current is null)
         {
             IsDarkTheme = isDark;
             return;
         }
 
-        var merged = Application.Current.Resources.MergedDictionaries;
+        var merged = System.Windows.Application.Current.Resources.MergedDictionaries;
         ResourceDictionary? currentTheme = null;
 
         foreach (var dictionary in merged)
