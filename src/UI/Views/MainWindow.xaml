@@ -8,6 +8,7 @@
         Width="1400"
         MinHeight="720"
         MinWidth="1180"
+        Icon="/Resources/Icons/app-icon.ico"
         Background="{DynamicResource BackgroundBrush}"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>

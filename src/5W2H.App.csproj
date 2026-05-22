@@ -7,6 +7,7 @@
     <RootNamespace>FiveW2H.App</RootNamespace>
     <Version>1.0.0</Version>
     <StartupObject>FiveW2H.App.App</StartupObject>
+    <ApplicationIcon>Resources\Icons\app-icon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <PublishReadyToRun>true</PublishReadyToRun>
@@ -25,5 +26,6 @@
   <ItemGroup>
     <ApplicationDefinition Remove="App.xaml" />
     <Page Include="App.xaml" />
+    <Resource Include="Resources\Icons\app-icon.ico" />
   </ItemGroup>
 </Project>

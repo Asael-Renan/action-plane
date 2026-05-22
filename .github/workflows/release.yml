@@ -79,6 +79,7 @@ jobs:
           --outputDir Releases
           --packTitle "5W2H Management"
           --packAuthors "Asael Renan"
+          --icon src/Resources/Icons/app-icon.ico
           --releaseNotes RELEASE_NOTES.md
 
       - name: Upload GitHub release
