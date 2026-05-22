@@ -1,0 +1,37 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:FiveW2H.App.UI.Converters"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+    <local:StatusColorConverter x:Key="StatusColorConverter"/>
+    <local:PriorityColorConverter x:Key="PriorityColorConverter"/>
+    <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter"/>
+    <local:StatusTextConverter x:Key="StatusTextConverter"/>
+    <local:PriorityTextConverter x:Key="PriorityTextConverter"/>
+    <local:EnumDisplayConverter x:Key="EnumDisplayConverter"/>
+    <local:TaskCategoryConverter x:Key="TaskCategoryConverter"/>
+    <local:WidthConverter x:Key="WidthConverter"/>
+
+    <DataTemplate x:Key="EnumComboBoxItemTemplate">
+        <TextBlock Text="{Binding Converter={StaticResource EnumDisplayConverter}}"/>
+    </DataTemplate>
+
+    <CornerRadius x:Key="CornerRadiusSmall">8</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusMedium">10</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusLarge">14</CornerRadius>
+    <CornerRadius x:Key="CornerRadiusXLarge">18</CornerRadius>
+
+    <Thickness x:Key="PagePadding">32,34,30,28</Thickness>
+    <Thickness x:Key="CardPadding">24</Thickness>
+    <Thickness x:Key="CompactCardPadding">20</Thickness>
+    <Thickness x:Key="FieldSpacing">0,0,0,18</Thickness>
+    <Thickness x:Key="SectionSpacing">0,0,0,24</Thickness>
+    <Thickness x:Key="HeaderSpacing">0,0,0,28</Thickness>
+
+    <sys:Double x:Key="ControlMinHeight">40</sys:Double>
+    <sys:Double x:Key="CompactControlHeight">36</sys:Double>
+    <sys:Double x:Key="SidebarWidth">247</sys:Double>
+    <sys:Double x:Key="FilterControlWidth">176</sys:Double>
+
+    <DropShadowEffect x:Key="ShadowEffect" BlurRadius="4" Opacity="0.15" ShadowDepth="2"/>
+</ResourceDictionary>
