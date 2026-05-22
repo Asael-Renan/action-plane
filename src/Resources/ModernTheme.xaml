@@ -100,6 +100,11 @@
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
     </Style>
 
+    <Style x:Key="TertiaryActionButtonStyle" BasedOn="{StaticResource SecondaryActionButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Padding" Value="14,0"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+    </Style>
+
     <Style x:Key="SidebarNavButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Height" Value="40"/>
         <Setter Property="Margin" Value="8,0,16,8"/>
@@ -581,6 +586,19 @@
         <Setter Property="Margin" Value="0,0,0,6"/>
     </Style>
 
+    <Style x:Key="FieldHintTextStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextMutedBrush}"/>
+        <Setter Property="Margin" Value="0,6,0,0"/>
+        <Setter Property="TextWrapping" Value="Wrap"/>
+    </Style>
+
+    <Style x:Key="SectionHeaderTextStyle" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="12"/>
+        <Setter Property="FontWeight" Value="SemiBold"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+    </Style>
+
     <Style x:Key="FormFieldContainerStyle" TargetType="{x:Type StackPanel}">
         <Setter Property="Margin" Value="{StaticResource FieldSpacing}"/>
     </Style>
@@ -605,6 +623,82 @@
 
     <Style x:Key="FormCardStyle" BasedOn="{StaticResource SectionCardStyle}" TargetType="{x:Type Border}">
         <Setter Property="Padding" Value="24"/>
+    </Style>
+
+    <Style x:Key="WorkspaceHeaderCardStyle" BasedOn="{StaticResource SectionCardStyle}" TargetType="{x:Type Border}">
+        <Setter Property="Padding" Value="28,24"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusLarge}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+    </Style>
+
+    <Style x:Key="FormSectionCardStyle" BasedOn="{StaticResource SectionCardStyle}" TargetType="{x:Type Border}">
+        <Setter Property="Padding" Value="18,16"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusMedium}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+    </Style>
+
+    <Style x:Key="ChipBadgeStyle" TargetType="{x:Type Border}">
+        <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusLarge}"/>
+        <Setter Property="Padding" Value="10,5"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceMutedBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+
+    <Style x:Key="FooterActionBarStyle" BasedOn="{StaticResource SectionCardStyle}" TargetType="{x:Type Border}">
+        <Setter Property="Padding" Value="18"/>
+        <Setter Property="CornerRadius" Value="{StaticResource CornerRadiusLarge}"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+    </Style>
+
+    <Style x:Key="SegmentedSelectorItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Margin" Value="0,0,8,8"/>
+        <Setter Property="Padding" Value="14,8"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="itemBorder"
+                            Background="{DynamicResource SurfaceMutedBrush}"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="{StaticResource CornerRadiusSmall}"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="itemBorder" Property="BorderBrush" Value="{DynamicResource PrimaryAccentBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="itemBorder" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter TargetName="itemBorder" Property="BorderBrush" Value="{DynamicResource PrimaryAccentBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SegmentedSelectorStyle" TargetType="{x:Type ListBox}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ItemContainerStyle" Value="{StaticResource SegmentedSelectorItemStyle}"/>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <WrapPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <Style x:Key="AlertCardStyle" TargetType="{x:Type Border}">

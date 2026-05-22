@@ -1,6 +1,6 @@
 # AGENTS.md — 5W2H
 
-**Modo padrão:** `caveman full`. Linguagem normal em código, commits, PRs e erros.
+**Modo padrão:** `caveman ultra`. Linguagem normal em código, commits, PRs e erros.
 
 ## Projeto
 
@@ -86,7 +86,7 @@ Se a branch de dev não existir ou estiver incerta, perguntar antes de criar ou 
 | `dotnet run`     | ✅/❌/⏭ |
 | `dotnet publish` | ✅/❌/⏭ |
 
- contexto gasto -> porcentagem/quantidade | Tokens gastos -> quantidade
+contexto gasto -> porcentagem/quantidade | Tokens gastos -> quantidade
 
 **Riscos / pendências:** nenhum
 ```
