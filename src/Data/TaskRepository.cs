@@ -21,7 +21,8 @@ public interface ITaskRepository
         string? searchText = null,
         DateTime? startDate = null,
         DateTime? endDate = null,
-        string? responsible = null);
+        string? responsible = null,
+        string? company = null);
 
     /// <summary>Adds a new task to the repository.</summary>
     Task<int> AddAsync(FiveW2HTask task);
@@ -83,7 +84,8 @@ public class TaskRepository : ITaskRepository
         string? searchText = null,
         DateTime? startDate = null,
         DateTime? endDate = null,
-        string? responsible = null)
+        string? responsible = null,
+        string? company = null)
     {
         using (var connection = new SQLiteConnection(_connectionString))
         {
@@ -94,7 +96,7 @@ public class TaskRepository : ITaskRepository
 
             if (!string.IsNullOrWhiteSpace(searchText))
             {
-                sql += " AND (What LIKE @SearchText OR Why LIKE @SearchText OR How LIKE @SearchText OR Notes LIKE @SearchText)";
+                sql += " AND (What LIKE @SearchText OR Why LIKE @SearchText OR Company LIKE @SearchText OR [Where] LIKE @SearchText OR Who LIKE @SearchText OR How LIKE @SearchText OR Notes LIKE @SearchText)";
                 parameters.Add("@SearchText", $"%{searchText}%");
             }
 
@@ -112,8 +114,14 @@ public class TaskRepository : ITaskRepository
 
             if (!string.IsNullOrWhiteSpace(responsible))
             {
-                sql += " AND Who = @Who";
-                parameters.Add("@Who", responsible);
+                sql += " AND Who LIKE @Who";
+                parameters.Add("@Who", $"%{responsible}%");
+            }
+
+            if (!string.IsNullOrWhiteSpace(company))
+            {
+                sql += " AND Company LIKE @Company";
+                parameters.Add("@Company", $"%{company}%");
             }
 
             sql += " ORDER BY [When] DESC";
@@ -132,8 +140,8 @@ public class TaskRepository : ITaskRepository
             await connection.OpenAsync();
 
             const string sql = @"
-                INSERT INTO FiveW2HTasks (What, Why, [Where], [When], Who, How, HowMuch, Status, Priority, Notes, CreatedAt, UpdatedAt)
-                VALUES (@What, @Why, @Where, @When, @Who, @How, @HowMuch, @Status, @Priority, @Notes, @CreatedAt, @UpdatedAt);
+                INSERT INTO FiveW2HTasks (What, Why, [Where], Company, [When], Who, How, HowMuch, Status, Priority, Notes, CreatedAt, UpdatedAt)
+                VALUES (@What, @Why, @Where, @Company, @When, @Who, @How, @HowMuch, @Status, @Priority, @Notes, @CreatedAt, @UpdatedAt);
                 SELECT last_insert_rowid();
             ";
 
@@ -142,6 +150,7 @@ public class TaskRepository : ITaskRepository
                 task.What,
                 task.Why,
                 task.Where,
+                task.Company,
                 task.When,
                 task.Who,
                 task.How,
@@ -167,7 +176,7 @@ public class TaskRepository : ITaskRepository
 
             const string sql = @"
                 UPDATE FiveW2HTasks
-                SET What = @What, Why = @Why, [Where] = @Where, [When] = @When, Who = @Who,
+                SET What = @What, Why = @Why, [Where] = @Where, Company = @Company, [When] = @When, Who = @Who,
                     How = @How, HowMuch = @HowMuch, Status = @Status, Priority = @Priority,
                     Notes = @Notes, UpdatedAt = @UpdatedAt
                 WHERE Id = @Id
@@ -179,6 +188,7 @@ public class TaskRepository : ITaskRepository
                 task.What,
                 task.Why,
                 task.Where,
+                task.Company,
                 task.When,
                 task.Who,
                 task.How,

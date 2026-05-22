@@ -27,6 +27,7 @@ public class TaskServiceTests
             What = "Test task",
             Why = "Testing",
             Where = "Office",
+            Company = "Acme",
             When = DateTime.UtcNow.AddDays(1),
             Who = "Test Person",
             How = "By testing",
@@ -44,6 +45,7 @@ public class TaskServiceTests
         // Assert
         Assert.NotNull(result);
         Assert.Equal("Test task", result.What);
+        Assert.Equal("Acme", result.Company);
         Assert.Equal(TaskStatus.Pending, result.Status);
         _mockRepository.Verify(r => r.AddAsync(It.IsAny<FiveW2HTask>()), Times.Once);
     }
@@ -97,6 +99,7 @@ public class TaskServiceTests
             Id = 1,
             What = "Test task",
             Why = "Testing",
+            Company = "Globex",
             Who = "Test Person",
             How = "By testing",
             HowMuch = 500
@@ -113,6 +116,36 @@ public class TaskServiceTests
         Assert.NotNull(result);
         Assert.Equal(1, result.Id);
         Assert.Equal("Test task", result.What);
+        Assert.Equal("Globex", result.Company);
+    }
+
+    [Fact]
+    public async Task SearchTasksAsyncWithCompanyFilterPassesCompanyToRepository()
+    {
+        var tasks = new[]
+        {
+            new FiveW2HTask
+            {
+                Id = 7,
+                What = "Review contract",
+                Why = "Commercial follow-up",
+                Company = "Acme",
+                Who = "Maria",
+                How = "Meeting",
+                HowMuch = 0,
+                When = DateTime.UtcNow.AddDays(2)
+            }
+        };
+
+        _mockRepository
+            .Setup(r => r.GetFilteredAsync("review", null, null, "Maria", "Acme"))
+            .ReturnsAsync(tasks);
+
+        var result = await _service.SearchTasksAsync("review", null, null, "Maria", "Acme");
+
+        var task = Assert.Single(result);
+        Assert.Equal("Acme", task.Company);
+        _mockRepository.Verify(r => r.GetFilteredAsync("review", null, null, "Maria", "Acme"), Times.Once);
     }
 
     [Fact]

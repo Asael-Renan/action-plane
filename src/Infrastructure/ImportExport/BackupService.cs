@@ -21,6 +21,22 @@ public class BackupService : IBackupService
         "What",
         "Why",
         "Where",
+        "Company",
+        "When",
+        "Who",
+        "How",
+        "HowMuch",
+        "Status",
+        "Priority",
+        "Notes"
+    ];
+
+    private static readonly string[] LegacyHeaders =
+    [
+        "Id",
+        "What",
+        "Why",
+        "Where",
         "When",
         "Who",
         "How",
@@ -54,6 +70,7 @@ public class BackupService : IBackupService
                 Escape(task.What),
                 Escape(task.Why),
                 Escape(task.Where),
+                Escape(task.Company),
                 Escape(task.When.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)),
                 Escape(task.Who),
                 Escape(task.How),
@@ -82,6 +99,7 @@ public class BackupService : IBackupService
         }
 
         var headers = ParseCsvLine(lines[0]);
+        var hasCompanyColumn = HasCompanyHeader(headers);
         if (!HeadersAreValid(headers))
         {
             result.Errors.Add($"Invalid CSV header. Expected: {string.Join(",", ExpectedHeaders)}");
@@ -99,14 +117,23 @@ public class BackupService : IBackupService
             try
             {
                 var values = ParseCsvLine(lines[index]);
-                if (values.Count != ExpectedHeaders.Length)
+                var expectedColumnCount = hasCompanyColumn ? ExpectedHeaders.Length : LegacyHeaders.Length;
+                if (values.Count != expectedColumnCount)
                 {
-                    result.Errors.Add($"Line {lineNumber}: expected {ExpectedHeaders.Length} columns but found {values.Count}.");
+                    result.Errors.Add($"Line {lineNumber}: expected {expectedColumnCount} columns but found {values.Count}.");
                     continue;
                 }
 
                 var id = int.Parse(values[0], CultureInfo.InvariantCulture);
                 var existingTask = existingTasks.FirstOrDefault(t => t.Id == id);
+                var company = hasCompanyColumn ? values[4] : string.Empty;
+                var whenIndex = hasCompanyColumn ? 5 : 4;
+                var whoIndex = hasCompanyColumn ? 6 : 5;
+                var howIndex = hasCompanyColumn ? 7 : 6;
+                var howMuchIndex = hasCompanyColumn ? 8 : 7;
+                var statusIndex = hasCompanyColumn ? 9 : 8;
+                var priorityIndex = hasCompanyColumn ? 10 : 9;
+                var notesIndex = hasCompanyColumn ? 11 : 10;
 
                 var task = new FiveW2HTask
                 {
@@ -114,13 +141,14 @@ public class BackupService : IBackupService
                     What = values[1],
                     Why = values[2],
                     Where = values[3],
-                    When = DateTime.Parse(values[4], CultureInfo.InvariantCulture),
-                    Who = values[5],
-                    How = values[6],
-                    HowMuch = decimal.Parse(values[7], CultureInfo.InvariantCulture),
-                    Status = Enum.Parse<TaskStatus>(values[8]),
-                    Priority = Enum.Parse<Priority>(values[9]),
-                    Notes = values[10],
+                    Company = company,
+                    When = DateTime.Parse(values[whenIndex], CultureInfo.InvariantCulture),
+                    Who = values[whoIndex],
+                    How = values[howIndex],
+                    HowMuch = decimal.Parse(values[howMuchIndex], CultureInfo.InvariantCulture),
+                    Status = Enum.Parse<TaskStatus>(values[statusIndex]),
+                    Priority = Enum.Parse<Priority>(values[priorityIndex]),
+                    Notes = values[notesIndex],
                     CreatedAt = DateTime.UtcNow,
                     UpdatedAt = DateTime.UtcNow
                 };
@@ -163,6 +191,7 @@ public class BackupService : IBackupService
             t.What,
             t.Why,
             t.Where,
+            t.Company,
             t.When,
             t.Who,
             t.How,
@@ -194,19 +223,20 @@ public class BackupService : IBackupService
     private static async Task<string> ExportToCsvAsync(IEnumerable<FiveW2HTask> tasks)
     {
         var csv = new StringBuilder();
-        csv.AppendLine("Id,What,Why,Where,When,Who,How,HowMuch,Status,Priority,Notes,CreatedAt,UpdatedAt");
+        csv.AppendLine("Id,What,Why,Where,Company,When,Who,How,HowMuch,Status,Priority,Notes,CreatedAt,UpdatedAt");
 
         foreach (var task in tasks)
         {
             var escapedWhat = EscapeCsvField(task.What);
             var escapedWhy = EscapeCsvField(task.Why);
             var escapedWhere = EscapeCsvField(task.Where);
+            var escapedCompany = EscapeCsvField(task.Company);
             var escapedWho = EscapeCsvField(task.Who);
             var escapedHow = EscapeCsvField(task.How);
             var escapedNotes = EscapeCsvField(task.Notes);
 
             csv.AppendLine(CultureInfo.InvariantCulture,
-                $"{task.Id},\"{escapedWhat}\",\"{escapedWhy}\",\"{escapedWhere}\"," +
+                $"{task.Id},\"{escapedWhat}\",\"{escapedWhy}\",\"{escapedWhere}\",\"{escapedCompany}\"," +
                 $"{task.When:yyyy-MM-dd HH:mm:ss},\"{escapedWho}\",\"{escapedHow}\"," +
                 $"{task.HowMuch},{task.Status},{task.Priority},\"{escapedNotes}\"," +
                 $"{task.CreatedAt:yyyy-MM-dd HH:mm:ss},{task.UpdatedAt:yyyy-MM-dd HH:mm:ss}");
@@ -264,7 +294,11 @@ public class BackupService : IBackupService
 
     private static bool HeadersAreValid(List<string> headers)
     {
-        return headers.Count == ExpectedHeaders.Length &&
-               headers.SequenceEqual(ExpectedHeaders);
+        return headers.SequenceEqual(ExpectedHeaders) || headers.SequenceEqual(LegacyHeaders);
+    }
+
+    private static bool HasCompanyHeader(List<string> headers)
+    {
+        return headers.SequenceEqual(ExpectedHeaders);
     }
 }

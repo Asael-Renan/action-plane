@@ -8,6 +8,8 @@ using FiveW2H.App.Infrastructure.Updates;
 using FiveW2H.App.UI.Models;
 using FiveW2H.App.UI.Services;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Data;
 using OxyPlot;
 using OxyPlot.Axes;
 using OxyPlot.Series;
@@ -48,6 +50,9 @@ public partial class MainViewModel : ObservableObject
     private string? filterResponsible;
 
     [ObservableProperty]
+    private string? filterCompany;
+
+    [ObservableProperty]
     private FiveW2H.App.Core.Models.TaskStatus? filterStatus;
 
     [ObservableProperty]
@@ -61,6 +66,9 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private string newWhere = string.Empty;
+
+    [ObservableProperty]
+    private string newCompany = string.Empty;
 
     [ObservableProperty]
     private DateTime? newWhen = DateTime.Today;
@@ -128,10 +136,29 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty]
     private bool isDarkTheme = true;
 
+    [ObservableProperty]
+    private ObservableCollection<string> companyOptions = new();
+
+    [ObservableProperty]
+    private ObservableCollection<string> responsibleOptions = new();
+
+    [ObservableProperty]
+    private GroupingOption selectedGrouping = new() { Label = "Agrupar por empresa", PropertyName = nameof(TaskModel.CompanyGroupLabel) };
+
+    private ICollectionView _tasksView;
+
     public string ThemeToggleGlyph => IsDarkTheme ? "\uE706" : "\uE708";
+    public ICollectionView TasksView => _tasksView;
 
     public IReadOnlyList<Priority> Priorities { get; } = Enum.GetValues<Priority>();
     public IReadOnlyList<FiveW2H.App.Core.Models.TaskStatus> Statuses { get; } = Enum.GetValues<FiveW2H.App.Core.Models.TaskStatus>();
+    public IReadOnlyList<GroupingOption> GroupingOptions { get; } =
+    [
+        new() { Label = "Sem agrupamento", PropertyName = string.Empty },
+        new() { Label = "Agrupar por empresa", PropertyName = nameof(TaskModel.CompanyGroupLabel) },
+        new() { Label = "Agrupar por responsavel", PropertyName = nameof(TaskModel.Who) },
+        new() { Label = "Agrupar por status", PropertyName = nameof(TaskModel.Status) }
+    ];
 
     public MainViewModel(
         ITaskService taskService,
@@ -149,8 +176,10 @@ public partial class MainViewModel : ObservableObject
         _messageDialogService = messageDialogService ?? throw new ArgumentNullException(nameof(messageDialogService));
         _appUpdateService = appUpdateService ?? throw new ArgumentNullException(nameof(appUpdateService));
         _themeService = themeService ?? throw new ArgumentNullException(nameof(themeService));
+        _tasksView = CollectionViewSource.GetDefaultView(Tasks);
         IsDarkTheme = _themeService.IsDarkTheme;
         _themeService.ThemeChanged += OnThemeChanged;
+        ApplyGrouping();
     }
 
     [RelayCommand]
@@ -159,6 +188,18 @@ public partial class MainViewModel : ObservableObject
     partial void OnIsDarkThemeChanged(bool value)
     {
         OnPropertyChanged(nameof(ThemeToggleGlyph));
+    }
+
+    partial void OnTasksChanged(ObservableCollection<TaskModel> value)
+    {
+        _tasksView = CollectionViewSource.GetDefaultView(value);
+        OnPropertyChanged(nameof(TasksView));
+        ApplyGrouping();
+    }
+
+    partial void OnSelectedGroupingChanged(GroupingOption value)
+    {
+        ApplyGrouping();
     }
 
     private void OnThemeChanged(object? sender, EventArgs e)
@@ -183,6 +224,7 @@ public partial class MainViewModel : ObservableObject
 
             ApplyClientSideFilters(models);
             Tasks = new ObservableCollection<TaskModel>(models);
+            UpdateFilterOptions(models);
             UpdateDashboardMetrics(models);
             UpdateCharts(models);
             StatusMessage = $"Loaded {models.Count} tasks";
@@ -209,12 +251,14 @@ public partial class MainViewModel : ObservableObject
                 SearchText,
                 FilterStartDate,
                 FilterEndDate,
-                FilterResponsible
+                FilterResponsible,
+                FilterCompany
             );
 
             var models = taskDtos.Select(MapToModel).ToList();
             ApplyClientSideFilters(models);
             Tasks = new ObservableCollection<TaskModel>(models);
+            UpdateFilterOptions(models);
             UpdateDashboardMetrics(models);
             UpdateCharts(models);
             StatusMessage = $"Found {models.Count} tasks";
@@ -236,6 +280,7 @@ public partial class MainViewModel : ObservableObject
         FilterStartDate = null;
         FilterEndDate = null;
         FilterResponsible = null;
+        FilterCompany = null;
         FilterStatus = null;
         FilterPriority = null;
         await LoadTasks();
@@ -275,6 +320,7 @@ public partial class MainViewModel : ObservableObject
                 What = NewWhat.Trim(),
                 Why = NewWhy.Trim(),
                 Where = NewWhere.Trim(),
+                Company = NewCompany.Trim(),
                 When = NewWhen.Value,
                 Who = NewWho.Trim(),
                 How = NewHow.Trim(),
@@ -306,6 +352,7 @@ public partial class MainViewModel : ObservableObject
         NewWhat = string.Empty;
         NewWhy = string.Empty;
         NewWhere = string.Empty;
+        NewCompany = string.Empty;
         NewWhen = DateTime.Today;
         NewWho = string.Empty;
         NewHow = string.Empty;
@@ -568,6 +615,7 @@ public partial class MainViewModel : ObservableObject
             What = dto.What,
             Why = dto.Why,
             Where = dto.Where,
+            Company = dto.Company,
             When = dto.When,
             Who = dto.Who,
             How = dto.How,
@@ -590,6 +638,40 @@ public partial class MainViewModel : ObservableObject
         if (FilterPriority is not null)
         {
             models.RemoveAll(task => !string.Equals(task.Priority, FilterPriority.Value.ToString(), StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    private void UpdateFilterOptions(IEnumerable<TaskModel> models)
+    {
+        CompanyOptions = new ObservableCollection<string>(models
+            .Select(task => task.Company.Trim())
+            .Where(company => !string.IsNullOrWhiteSpace(company))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(company => company, StringComparer.CurrentCultureIgnoreCase));
+
+        ResponsibleOptions = new ObservableCollection<string>(models
+            .Select(task => task.Who.Trim())
+            .Where(responsible => !string.IsNullOrWhiteSpace(responsible))
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .OrderBy(responsible => responsible, StringComparer.CurrentCultureIgnoreCase));
+    }
+
+    private void ApplyGrouping()
+    {
+        var view = TasksView;
+        if (view is null)
+        {
+            return;
+        }
+
+        using (view.DeferRefresh())
+        {
+            view.GroupDescriptions.Clear();
+
+            if (!string.IsNullOrWhiteSpace(SelectedGrouping.PropertyName))
+            {
+                view.GroupDescriptions.Add(new PropertyGroupDescription(SelectedGrouping.PropertyName));
+            }
         }
     }
 

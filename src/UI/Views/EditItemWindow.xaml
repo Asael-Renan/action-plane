@@ -67,15 +67,22 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="What" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="O que" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Text="{Binding What, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Who" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="Empresa" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox Text="{Binding Company, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4" Style="{StaticResource FormFieldContainerStyle}">
+                                <TextBlock Text="Quem" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Text="{Binding Who, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                             </StackPanel>
                         </Grid>
@@ -88,7 +95,7 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Why" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="Por que" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Text="{Binding Why, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                                          Height="92"
                                          TextWrapping="Wrap"
@@ -97,7 +104,7 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="How" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="Como" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Text="{Binding How, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                                          Height="92"
                                          TextWrapping="Wrap"
@@ -116,19 +123,19 @@
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Where" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="Onde" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Text="{Binding Where, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="When" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="Quando" Style="{StaticResource FormLabelStyle}"/>
                                 <DatePicker MinWidth="0"
                                             HorizontalAlignment="Stretch"
                                             SelectedDate="{Binding When, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="4" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="How Much" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="Custo" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Text="{Binding HowMuch, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, StringFormat=N2}"/>
                             </StackPanel>
                         </Grid>
@@ -148,7 +155,7 @@
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Priority" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="Prioridade" Style="{StaticResource FormLabelStyle}"/>
                                 <ComboBox ItemsSource="{Binding Priorities}"
                                           SelectedItem="{Binding SelectedPriority}"/>
                             </StackPanel>

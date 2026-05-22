@@ -18,6 +18,9 @@ public class FiveW2HTask
     /// <summary>Gets or sets WHERE - the location or scope where the task occurs.</summary>
     public string Where { get; set; } = string.Empty;
 
+    /// <summary>Gets or sets the company associated with the task.</summary>
+    public string Company { get; set; } = string.Empty;
+
     /// <summary>Gets or sets WHEN - the scheduled date/time for the task.</summary>
     public DateTime When { get; set; }
 

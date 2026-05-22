@@ -30,6 +30,7 @@ public class BackupServiceTests
                 What = "Task 1",
                 Why = "Reason 1",
                 Where = "Location 1",
+                Company = "Acme",
                 When = new DateTime(2024, 1, 1),
                 Who = "Person 1",
                 How = "Method 1",
@@ -49,6 +50,7 @@ public class BackupServiceTests
             Assert.True(File.Exists(filePath));
             var content = await File.ReadAllTextAsync(filePath);
             Assert.Contains("Task 1", content);
+            Assert.Contains("Acme", content);
             Assert.Contains("1000", content);
         }
         finally
@@ -68,6 +70,7 @@ public class BackupServiceTests
                 Id = 1,
                 What = "Task 1",
                 Why = "Reason 1",
+                Company = "Acme",
                 When = new DateTime(2024, 1, 1),
                 Who = "Person 1",
                 How = "Method 1",
@@ -79,6 +82,7 @@ public class BackupServiceTests
 
         Assert.NotEmpty(json);
         Assert.Contains("Task 1", json);
+        Assert.Contains("Acme", json);
         Assert.Contains("1000", json);
     }
 }

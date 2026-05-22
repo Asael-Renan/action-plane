@@ -30,6 +30,7 @@ public class AppDbContext
                     What TEXT NOT NULL,
                     Why TEXT NOT NULL,
                     [Where] TEXT,
+                    Company TEXT NOT NULL DEFAULT '',
                     [When] DATETIME NOT NULL,
                     Who TEXT NOT NULL,
                     How TEXT NOT NULL,
@@ -59,6 +60,12 @@ public class AppDbContext
                 command.CommandText = createTableSql;
                 await command.ExecuteNonQueryAsync();
             }
+
+            await EnsureColumnAsync(connection, "Company", "ALTER TABLE FiveW2HTasks ADD COLUMN Company TEXT NOT NULL DEFAULT '';");
+
+            await connection.ExecuteAsync(@"
+                CREATE INDEX IF NOT EXISTS IDX_FiveW2HTasks_Company 
+                    ON FiveW2HTasks(Company);");
         }
     }
 
@@ -74,15 +81,15 @@ public class AppDbContext
                 return;
 
             const string insertSql = @"
-                INSERT INTO FiveW2HTasks (What, Why, [Where], [When], Who, How, HowMuch, Status, Priority, Notes)
-                VALUES (@What, @Why, @Where, @When, @Who, @How, @HowMuch, @Status, @Priority, @Notes)
+                INSERT INTO FiveW2HTasks (What, Why, [Where], Company, [When], Who, How, HowMuch, Status, Priority, Notes)
+                VALUES (@What, @Why, @Where, @Company, @When, @Who, @How, @HowMuch, @Status, @Priority, @Notes)
             ";
 
             var sampleTasks = new[]
             {
-                new { What = "Design Database", Why = "Prepare for project", Where = "Office", When = DateTime.UtcNow.AddDays(7), Who = "Alice", How = "Using design tools", HowMuch = 5000m, Status = 1, Priority = 3, Notes = "Start next week" },
-                new { What = "Development Setup", Why = "Initialize project", Where = "Development", When = DateTime.UtcNow.AddDays(3), Who = "Bob", How = "Install dependencies", HowMuch = 2000m, Status = 0, Priority = 3, Notes = "Critical path item" },
-                new { What = "Testing Plan", Why = "Quality assurance", Where = "QA Lab", When = DateTime.UtcNow.AddDays(14), Who = "Charlie", How = "Create test matrix", HowMuch = 3000m, Status = 0, Priority = 2, Notes = "Due mid-month" }
+                new { What = "Design Database", Why = "Prepare for project", Where = "Office", Company = "Acme", When = DateTime.UtcNow.AddDays(7), Who = "Alice", How = "Using design tools", HowMuch = 5000m, Status = 1, Priority = 3, Notes = "Start next week" },
+                new { What = "Development Setup", Why = "Initialize project", Where = "Development", Company = "Globex", When = DateTime.UtcNow.AddDays(3), Who = "Bob", How = "Install dependencies", HowMuch = 2000m, Status = 0, Priority = 3, Notes = "Critical path item" },
+                new { What = "Testing Plan", Why = "Quality assurance", Where = "QA Lab", Company = "Acme", When = DateTime.UtcNow.AddDays(14), Who = "Charlie", How = "Create test matrix", HowMuch = 3000m, Status = 0, Priority = 2, Notes = "Due mid-month" }
             };
 
             foreach (var task in sampleTasks)
@@ -90,5 +97,21 @@ public class AppDbContext
                 await connection.ExecuteAsync(insertSql, task);
             }
         }
+    }
+
+    private static async Task EnsureColumnAsync(SQLiteConnection connection, string columnName, string alterStatement)
+    {
+        var columns = await connection.QueryAsync<TableInfoRow>("PRAGMA table_info(FiveW2HTasks);");
+        if (columns.Any(column => string.Equals(column.Name, columnName, StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        await connection.ExecuteAsync(alterStatement);
+    }
+
+    private sealed class TableInfoRow
+    {
+        public string Name { get; set; } = string.Empty;
     }
 }

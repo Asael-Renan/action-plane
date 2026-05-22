@@ -21,7 +21,8 @@ public interface ITaskService
         string? searchText = null,
         DateTime? startDate = null,
         DateTime? endDate = null,
-        string? responsible = null);
+        string? responsible = null,
+        string? company = null);
 
     /// <summary>Creates a new task.</summary>
     Task<FiveW2HTaskDto> CreateTaskAsync(CreateFiveW2HTaskDto dto);
@@ -65,9 +66,10 @@ public class TaskService : ITaskService
         string? searchText = null,
         DateTime? startDate = null,
         DateTime? endDate = null,
-        string? responsible = null)
+        string? responsible = null,
+        string? company = null)
     {
-        var tasks = await _repository.GetFilteredAsync(searchText, startDate, endDate, responsible);
+        var tasks = await _repository.GetFilteredAsync(searchText, startDate, endDate, responsible, company);
         return tasks.Select(MapToDto).ToList();
     }
 
@@ -82,6 +84,7 @@ public class TaskService : ITaskService
             What = dto.What,
             Why = dto.Why,
             Where = dto.Where,
+            Company = dto.Company,
             When = dto.When,
             Who = dto.Who,
             How = dto.How,
@@ -118,6 +121,7 @@ public class TaskService : ITaskService
             What = dto.What,
             Why = dto.Why,
             Where = dto.Where,
+            Company = dto.Company,
             When = dto.When,
             Who = dto.Who,
             How = dto.How,
@@ -211,6 +215,7 @@ public class TaskService : ITaskService
             What = task.What,
             Why = task.Why,
             Where = task.Where,
+            Company = task.Company,
             When = task.When,
             Who = task.Who,
             How = task.How,

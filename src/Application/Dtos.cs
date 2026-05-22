@@ -11,6 +11,7 @@ public class FiveW2HTaskDto
     public string What { get; set; } = string.Empty;
     public string Why { get; set; } = string.Empty;
     public string Where { get; set; } = string.Empty;
+    public string Company { get; set; } = string.Empty;
     public DateTime When { get; set; }
     public string Who { get; set; } = string.Empty;
     public string How { get; set; } = string.Empty;
@@ -30,6 +31,7 @@ public class CreateFiveW2HTaskDto
     public string What { get; set; } = string.Empty;
     public string Why { get; set; } = string.Empty;
     public string Where { get; set; } = string.Empty;
+    public string Company { get; set; } = string.Empty;
     public DateTime When { get; set; }
     public string Who { get; set; } = string.Empty;
     public string How { get; set; } = string.Empty;
@@ -47,6 +49,7 @@ public class UpdateFiveW2HTaskDto
     public string What { get; set; } = string.Empty;
     public string Why { get; set; } = string.Empty;
     public string Where { get; set; } = string.Empty;
+    public string Company { get; set; } = string.Empty;
     public DateTime When { get; set; }
     public string Who { get; set; } = string.Empty;
     public string How { get; set; } = string.Empty;

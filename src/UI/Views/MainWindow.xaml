@@ -398,60 +398,111 @@
                     </Grid>
 
                     <Border Grid.Row="2" Style="{StaticResource FormCardStyle}">
-                        <Grid VerticalAlignment="Center">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="14"/>
-                                <ColumnDefinition Width="176"/>
-                                <ColumnDefinition Width="14"/>
-                                <ColumnDefinition Width="176"/>
-                                <ColumnDefinition Width="14"/>
-                                <ColumnDefinition Width="120"/>
-                            </Grid.ColumnDefinitions>
+                        <StackPanel>
+                            <Grid Margin="0,0,0,14">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2.2*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="1.2*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="1.2*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="1.1*"/>
+                                </Grid.ColumnDefinitions>
 
-                            <Grid Grid.Column="0">
-                                <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                         MinHeight="{StaticResource CompactControlHeight}"
-                                         Padding="36,7,12,7"/>
-                                <TextBlock Style="{StaticResource IconTextStyle}"
-                                           Text="&#xE721;"
-                                           Foreground="{DynamicResource TextMutedBrush}"
-                                           Margin="13,0,0,0"
-                                           VerticalAlignment="Center"
-                                           HorizontalAlignment="Left"/>
-                                <TextBlock Text="Buscar acoes..."
-                                           Foreground="{DynamicResource TextMutedBrush}"
-                                           Margin="36,0,0,0"
-                                           IsHitTestVisible="False"
-                                           VerticalAlignment="Center">
-                                    <TextBlock.Style>
-                                        <Style TargetType="{x:Type TextBlock}">
-                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding SearchText}" Value="">
-                                                    <Setter Property="Visibility" Value="Visible"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </TextBlock.Style>
-                                </TextBlock>
+                                <Grid Grid.Column="0">
+                                    <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                             MinHeight="{StaticResource CompactControlHeight}"
+                                             Padding="36,7,12,7"/>
+                                    <TextBlock Style="{StaticResource IconTextStyle}"
+                                               Text="&#xE721;"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               Margin="13,0,0,0"
+                                               VerticalAlignment="Center"
+                                               HorizontalAlignment="Left"/>
+                                    <TextBlock Text="Buscar por acao, empresa, responsavel ou observacao"
+                                               Foreground="{DynamicResource TextMutedBrush}"
+                                               Margin="36,0,0,0"
+                                               IsHitTestVisible="False"
+                                               VerticalAlignment="Center">
+                                        <TextBlock.Style>
+                                            <Style TargetType="{x:Type TextBlock}">
+                                                <Setter Property="Visibility" Value="Collapsed"/>
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding SearchText}" Value="">
+                                                        <Setter Property="Visibility" Value="Visible"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Grid>
+
+                                <ComboBox Grid.Column="2"
+                                          Style="{StaticResource FilterComboBoxStyle}"
+                                          ItemsSource="{Binding CompanyOptions}"
+                                          Text="{Binding FilterCompany, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEditable="True"
+                                          IsTextSearchEnabled="False"
+                                          StaysOpenOnEdit="True"
+                                          Tag="Todas empresas"/>
+                                <ComboBox Grid.Column="4"
+                                          Style="{StaticResource FilterComboBoxStyle}"
+                                          ItemsSource="{Binding ResponsibleOptions}"
+                                          Text="{Binding FilterResponsible, UpdateSourceTrigger=PropertyChanged}"
+                                          IsEditable="True"
+                                          IsTextSearchEnabled="False"
+                                          StaysOpenOnEdit="True"
+                                          Tag="Todos responsaveis"/>
+                                <ComboBox Grid.Column="6"
+                                          Style="{StaticResource FilterComboBoxStyle}"
+                                          ItemsSource="{Binding GroupingOptions}"
+                                          SelectedItem="{Binding SelectedGrouping}"
+                                          DisplayMemberPath="Label"
+                                          Tag="Agrupamento"/>
                             </Grid>
 
-                            <ComboBox Grid.Column="2"
-                                      Style="{StaticResource FilterComboBoxStyle}"
-                                      ItemsSource="{Binding Statuses}"
-                                      SelectedItem="{Binding FilterStatus}"
-                                      Tag="Todos Status"/>
-                            <ComboBox Grid.Column="4"
-                                      Style="{StaticResource FilterComboBoxStyle}"
-                                      ItemsSource="{Binding Priorities}"
-                                      SelectedItem="{Binding FilterPriority}"
-                                      Tag="Todas Prioridades"/>
-                            <Button Grid.Column="6"
-                                    Command="{Binding SearchTasksCommand}"
-                                    Content="Todos"
-                                    Style="{StaticResource SecondaryActionButtonStyle}"/>
-                        </Grid>
+                            <Grid VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="1.15*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="1.15*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="1*"/>
+                                    <ColumnDefinition Width="14"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="10"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <DatePicker Grid.Column="0"
+                                            SelectedDate="{Binding FilterStartDate}"
+                                            MinHeight="{StaticResource CompactControlHeight}"/>
+                                <DatePicker Grid.Column="2"
+                                            SelectedDate="{Binding FilterEndDate}"
+                                            MinHeight="{StaticResource CompactControlHeight}"/>
+                                <ComboBox Grid.Column="4"
+                                          Style="{StaticResource FilterComboBoxStyle}"
+                                          ItemsSource="{Binding Statuses}"
+                                          SelectedItem="{Binding FilterStatus}"
+                                          Tag="Todos status"/>
+                                <ComboBox Grid.Column="6"
+                                          Style="{StaticResource FilterComboBoxStyle}"
+                                          ItemsSource="{Binding Priorities}"
+                                          SelectedItem="{Binding FilterPriority}"
+                                          Tag="Todas prioridades"/>
+                                <Button Grid.Column="8"
+                                        Command="{Binding SearchTasksCommand}"
+                                        Content="Aplicar filtros"
+                                        Style="{StaticResource PrimaryActionButtonStyle}"/>
+                                <Button Grid.Column="10"
+                                        Command="{Binding ResetFiltersCommand}"
+                                        Content="Limpar"
+                                        Style="{StaticResource SecondaryActionButtonStyle}"/>
+                            </Grid>
+                        </StackPanel>
                     </Border>
 
                     <Border Grid.Row="4"
@@ -459,14 +510,35 @@
                             Padding="0"
                             ClipToBounds="True"
                             CornerRadius="12">
-                        <DataGrid ItemsSource="{Binding Tasks}"
+                        <DataGrid ItemsSource="{Binding TasksView}"
                                   SelectedItem="{Binding SelectedTask}"
                                   Style="{StaticResource DarkDataGridStyle}"
                                   ColumnHeaderStyle="{StaticResource DarkDataGridHeaderStyle}"
                                   CellStyle="{StaticResource DarkDataGridCellStyle}"
                                   RowStyle="{StaticResource DarkDataGridRowStyle}">
+                            <DataGrid.GroupStyle>
+                                <GroupStyle>
+                                    <GroupStyle.HeaderTemplate>
+                                        <DataTemplate>
+                                            <Border Background="{DynamicResource SurfaceBrush}"
+                                                    BorderBrush="{DynamicResource BorderBrush}"
+                                                    BorderThickness="0,0,0,1"
+                                                    Padding="14,10">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Name}"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="{DynamicResource TextPrimaryBrush}"/>
+                                                    <TextBlock Text="{Binding ItemCount, StringFormat=  ({0} acoes)}"
+                                                               Margin="8,0,0,0"
+                                                               Foreground="{DynamicResource TextSecondaryBrush}"/>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </GroupStyle.HeaderTemplate>
+                                </GroupStyle>
+                            </DataGrid.GroupStyle>
                             <DataGrid.Columns>
-                                <DataGridTemplateColumn Header="O QUE" Width="2.4*" MinWidth="250">
+                                <DataGridTemplateColumn Header="ACAO" Width="2.2*" MinWidth="260">
                                     <DataGridTemplateColumn.CellTemplate>
                                         <DataTemplate>
                                             <StackPanel VerticalAlignment="Center">
@@ -484,6 +556,7 @@
                                     </DataGridTemplateColumn.CellTemplate>
                                 </DataGridTemplateColumn>
 
+                                <DataGridTextColumn Header="EMPRESA" Binding="{Binding Company}" Width="1.2*" MinWidth="160"/>
                                 <DataGridTextColumn Header="QUEM" Binding="{Binding Who}" Width="1*" MinWidth="130"/>
                                 <DataGridTextColumn Header="QUANDO" Binding="{Binding When, StringFormat={}{0:dd MMM yyyy}}" Width="1*" MinWidth="120"/>
 
@@ -582,12 +655,18 @@
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="18"/>
                                         <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="18"/>
+                                        <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                                         <TextBlock Style="{StaticResource FormLabelStyle}" Text="O que"/>
                                         <TextBox Text="{Binding NewWhat, UpdateSourceTrigger=PropertyChanged}"/>
                                     </StackPanel>
                                     <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
+                                        <TextBlock Style="{StaticResource FormLabelStyle}" Text="Empresa"/>
+                                        <TextBox Text="{Binding NewCompany, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="4" Style="{StaticResource FormFieldContainerStyle}">
                                         <TextBlock Style="{StaticResource FormLabelStyle}" Text="Quem"/>
                                         <TextBox Text="{Binding NewWho, UpdateSourceTrigger=PropertyChanged}"/>
                                     </StackPanel>

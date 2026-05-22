@@ -26,6 +26,9 @@ public partial class EditItemViewModel : ObservableValidator
     private string where = string.Empty;
 
     [ObservableProperty]
+    private string company = string.Empty;
+
+    [ObservableProperty]
     [Required(ErrorMessage = "When is required.")]
     private DateTime? when;
 
@@ -70,6 +73,7 @@ public partial class EditItemViewModel : ObservableValidator
         What = task.What;
         Why = task.Why;
         Where = task.Where;
+        Company = task.Company;
         When = task.When;
         Who = task.Who;
         How = task.How;
@@ -101,6 +105,7 @@ public partial class EditItemViewModel : ObservableValidator
                 What = What.Trim(),
                 Why = Why.Trim(),
                 Where = Where.Trim(),
+                Company = Company.Trim(),
                 When = When.Value,
                 Who = Who.Trim(),
                 How = How.Trim(),

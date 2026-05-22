@@ -9,6 +9,7 @@ public class TaskModel
     public string What { get; set; } = string.Empty;
     public string Why { get; set; } = string.Empty;
     public string Where { get; set; } = string.Empty;
+    public string Company { get; set; } = string.Empty;
     public DateTime When { get; set; }
     public string Who { get; set; } = string.Empty;
     public string How { get; set; } = string.Empty;
@@ -18,4 +19,6 @@ public class TaskModel
     public string Notes { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+
+    public string CompanyGroupLabel => string.IsNullOrWhiteSpace(Company) ? "Sem empresa" : Company;
 }
