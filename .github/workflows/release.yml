@@ -31,7 +31,7 @@ jobs:
           dotnet-version: 8.0.x
 
       - name: Restore
-        run: dotnet restore 5W2H-Management.sln
+        run: dotnet restore 5W2H-Management.sln --runtime win-x64
 
       - name: Resolve version
         id: version
