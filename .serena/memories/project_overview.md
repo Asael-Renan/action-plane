@@ -14,7 +14,7 @@ Current code structure:
 - `tests`: unit tests for service and backup logic
 
 Tech stack confirmed from project configuration:
-- .NET 8 (`net8.0-windows`)
+- .NET 10 (`net10.0-windows`)
 - WPF
 - CommunityToolkit.Mvvm
 - Dapper
