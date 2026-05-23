@@ -59,21 +59,6 @@
                 <ScrollViewer Grid.Row="2"
                               VerticalScrollBarVisibility="Auto">
                     <StackPanel Margin="22,20,22,18">
-                        <Grid Margin="0,0,0,18">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="12"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="OS 5 W"
-                                       Style="{StaticResource SectionHeaderTextStyle}"
-                                       VerticalAlignment="Center"/>
-                            <Border Grid.Column="2"
-                                    Height="1"
-                                    Background="{DynamicResource BorderBrush}"
-                                    VerticalAlignment="Center"/>
-                        </Grid>
-
                         <Grid Margin="0,0,0,8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -130,30 +115,15 @@
                             </StackPanel>
                         </Grid>
 
-                        <Grid Margin="0,10,0,18">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="12"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="ONDE • QUANDO • QUANTO"
-                                       Style="{StaticResource SectionHeaderTextStyle}"
-                                       VerticalAlignment="Center"/>
-                            <Border Grid.Column="2"
-                                    Height="1"
-                                    Background="{DynamicResource BorderBrush}"
-                                    VerticalAlignment="Center"/>
-                        </Grid>
-
                         <Grid Margin="0,0,0,18">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*"/>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="1.15*"/>
-                                <ColumnDefinition Width="20"/>
-                                <ColumnDefinition Width="1.2*"/>
-                                <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="2.35*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="1.35*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="2.55*"/>
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
@@ -168,7 +138,6 @@
                                 <TextBlock Text="QUANDO"
                                            Style="{StaticResource FormLabelStyle}"/>
                                 <DatePicker MinWidth="0"
-                                            HorizontalAlignment="Stretch"
                                             SelectedDate="{Binding NewWhen}"/>
                             </StackPanel>
 

@@ -146,7 +146,7 @@
 
             <StackPanel Orientation="Horizontal"
                         HorizontalAlignment="Right"
-                        Margin="0,18,24,0">
+                        Margin="0,18,30,0">
                 <Button Command="{Binding ToggleThemeCommand}"
                         Style="{StaticResource ThemeToggleButtonStyle}"
                         ToolTip="Alternar tema claro/escuro">

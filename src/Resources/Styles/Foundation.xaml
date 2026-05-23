@@ -21,7 +21,7 @@
     <CornerRadius x:Key="CornerRadiusLarge">14</CornerRadius>
     <CornerRadius x:Key="CornerRadiusXLarge">18</CornerRadius>
 
-    <Thickness x:Key="PagePadding">32,34,30,28</Thickness>
+    <Thickness x:Key="PagePadding">32,15,30,28</Thickness>
     <Thickness x:Key="CardPadding">24</Thickness>
     <Thickness x:Key="CompactCardPadding">20</Thickness>
     <Thickness x:Key="FieldSpacing">0,0,0,18</Thickness>
@@ -29,9 +29,55 @@
     <Thickness x:Key="HeaderSpacing">0,0,0,28</Thickness>
 
     <sys:Double x:Key="ControlMinHeight">40</sys:Double>
-    <sys:Double x:Key="CompactControlHeight">36</sys:Double>
+    <sys:Double x:Key="CompactControlHeight">40</sys:Double>
     <sys:Double x:Key="SidebarWidth">247</sys:Double>
     <sys:Double x:Key="FilterControlWidth">176</sys:Double>
+    <sys:Double x:Key="DateControlWidth">138</sys:Double>
 
     <DropShadowEffect x:Key="ShadowEffect" BlurRadius="4" Opacity="0.15" ShadowDepth="2"/>
+
+    <!-- Header Panel Style -->
+    <Style x:Key="HeaderPanelStyle" TargetType="{x:Type StackPanel}">
+        <Setter Property="Background" Value="{DynamicResource HeaderBackgroundBrush}"/>
+    </Style>
+
+    <!-- Scrollbar Styles -->
+    <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Thumb}">
+                    <Border CornerRadius="4" Background="{DynamicResource TextSecondaryBrush}" Opacity="0.6"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Opacity" Value="1"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type ScrollBar}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Width" Value="4"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ScrollBar}">
+                    <Grid Background="{TemplateBinding Background}">
+                        <Track x:Name="PART_Track" IsDirectionReversed="True">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Command="ScrollBar.LineUpCommand" Opacity="0"/>
+                            </Track.DecreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Style="{StaticResource ScrollBarThumbStyle}" Margin="1,0"/>
+                            </Track.Thumb>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="ScrollBar.LineDownCommand" Opacity="0"/>
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 </ResourceDictionary>
