@@ -16,7 +16,16 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <TextBlock Text="{Binding Hint, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                   Style="{StaticResource FieldHintTextStyle}"/>
+        <TextBlock Text="{Binding Hint, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <TextBlock.Style>
+                <Style BasedOn="{StaticResource FieldHintTextStyle}" TargetType="{x:Type TextBlock}">
+                    <Style.Triggers>
+                        <Trigger Property="Text" Value="">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
     </StackPanel>
 </UserControl>

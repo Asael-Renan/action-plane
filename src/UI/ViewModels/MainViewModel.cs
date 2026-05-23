@@ -415,7 +415,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task ExportData()
     {
-        var filePath = _fileDialogService.ShowSaveCsvDialog();
+        var filePath = _fileDialogService.ShowSaveExportDialog();
         if (string.IsNullOrWhiteSpace(filePath))
         {
             StatusMessage = "Export cancelled";
@@ -428,9 +428,9 @@ public partial class MainViewModel : ObservableObject
             StatusMessage = "Exporting data...";
 
             var taskDtos = await _taskService.GetAllTasksAsync();
-            await _backupService.ExportCsvAsync(filePath, taskDtos);
+            await _backupService.ExportAsync(filePath, taskDtos);
 
-            StatusMessage = $"Exported {taskDtos.Count()} task(s) to CSV";
+            StatusMessage = $"Exported {taskDtos.Count()} task(s)";
         }
         catch (Exception ex)
         {
@@ -445,7 +445,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     public async Task ImportData()
     {
-        var filePath = _fileDialogService.ShowOpenCsvDialog();
+        var filePath = _fileDialogService.ShowOpenImportDialog();
         if (string.IsNullOrWhiteSpace(filePath))
         {
             StatusMessage = "Import cancelled";
@@ -457,7 +457,7 @@ public partial class MainViewModel : ObservableObject
             IsLoading = true;
             StatusMessage = "Importing data...";
 
-            var result = await _backupService.ImportCsvAsync(filePath);
+            var result = await _backupService.ImportAsync(filePath);
             await SearchTasks();
 
             StatusMessage = result.Errors.Count == 0

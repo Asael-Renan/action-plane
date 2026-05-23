@@ -21,7 +21,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type Button}">
                     <Border x:Name="border"
-                            CornerRadius="{DynamicResource CornerRadiusSmall}"
+                            CornerRadius="{DynamicResource CornerRadiusMedium}"
                             Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}">
@@ -49,7 +49,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="PrimaryActionButtonStyle" TargetType="{x:Type Button}">
+    <Style x:Key="PrimaryActionButtonStyle" BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
         <Setter Property="MinHeight" Value="{DynamicResource CompactControlHeight}"/>
         <Setter Property="Padding" Value="18,0"/>
         <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
@@ -57,13 +57,27 @@
         <Setter Property="FontWeight" Value="Bold"/>
     </Style>
 
-    <Style x:Key="SecondaryActionButtonStyle" TargetType="{x:Type Button}">
+    <Style x:Key="SecondaryActionButtonStyle" BasedOn="{StaticResource {x:Type Button}}" TargetType="{x:Type Button}">
         <Setter Property="MinHeight" Value="{DynamicResource CompactControlHeight}"/>
         <Setter Property="Padding" Value="18,0"/>
         <Setter Property="Background" Value="{DynamicResource SurfaceMutedBrush}"/>
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
         <Setter Property="BorderThickness" Value="1"/>
         <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+    </Style>
+
+    <Style x:Key="FilterActionButtonStyle" BasedOn="{StaticResource PrimaryActionButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Height" Value="{DynamicResource ControlMinHeight}"/>
+        <Setter Property="MinWidth" Value="116"/>
+        <Setter Property="Padding" Value="18,0"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
+    </Style>
+
+    <Style x:Key="FilterSecondaryActionButtonStyle" BasedOn="{StaticResource SecondaryActionButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Height" Value="{DynamicResource ControlMinHeight}"/>
+        <Setter Property="MinWidth" Value="74"/>
+        <Setter Property="Padding" Value="16,0"/>
+        <Setter Property="VerticalAlignment" Value="Bottom"/>
     </Style>
 
     <Style x:Key="TertiaryActionButtonStyle" BasedOn="{StaticResource SecondaryActionButtonStyle}" TargetType="{x:Type Button}">
@@ -129,6 +143,37 @@
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Root" Property="Background" Value="{DynamicResource SurfaceMutedBrush}"/>
                             <Setter TargetName="Root" Property="BorderBrush" Value="{DynamicResource PrimaryAccentBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="ToolbarIconButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="36"/>
+        <Setter Property="Height" Value="36"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="Margin" Value="0"/>
+        <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource CornerRadiusLarge}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Root" Property="Background" Value="{DynamicResource SurfaceMutedBrush}"/>
+                            <Setter TargetName="Root" Property="BorderBrush" Value="{DynamicResource PrimaryAccentBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

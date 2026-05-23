@@ -4,8 +4,8 @@ namespace FiveW2H.App.UI.Services;
 
 public interface IFileDialogService
 {
-    string? ShowOpenCsvDialog();
-    string? ShowSaveCsvDialog();
+    string? ShowOpenImportDialog();
+    string? ShowSaveExportDialog();
 }
 
 public interface IMessageDialogService
@@ -21,12 +21,12 @@ public interface IDialogService
 
 public class FileDialogService : IFileDialogService
 {
-    public string? ShowOpenCsvDialog()
+    public string? ShowOpenImportDialog()
     {
         var dialog = new OpenFileDialog
         {
             Title = "Importar dados",
-            Filter = "CSV files (*.csv)|*.csv|All files (*.*)|*.*",
+            Filter = "Planilhas Excel (*.xlsx)|*.xlsx|Arquivos CSV (*.csv)|*.csv|Todos os arquivos (*.*)|*.*",
             CheckFileExists = true,
             Multiselect = false
         };
@@ -34,15 +34,15 @@ public class FileDialogService : IFileDialogService
         return dialog.ShowDialog() == true ? dialog.FileName : null;
     }
 
-    public string? ShowSaveCsvDialog()
+    public string? ShowSaveExportDialog()
     {
         var dialog = new SaveFileDialog
         {
             Title = "Exportar dados",
-            Filter = "CSV files (*.csv)|*.csv",
-            DefaultExt = "csv",
+            Filter = "Planilhas Excel (*.xlsx)|*.xlsx|Arquivos CSV (*.csv)|*.csv",
+            DefaultExt = "xlsx",
             AddExtension = true,
-            FileName = $"5w2h-records-{DateTime.Now:yyyyMMdd-HHmm}.csv"
+            FileName = $"5w2h-records-{DateTime.Now:yyyyMMdd-HHmm}.xlsx"
         };
 
         return dialog.ShowDialog() == true ? dialog.FileName : null;

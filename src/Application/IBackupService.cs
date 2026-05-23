@@ -7,8 +7,8 @@ namespace FiveW2H.App.Application;
 /// </summary>
 public interface IBackupService
 {
-    Task ExportCsvAsync(string filePath, IEnumerable<FiveW2HTaskDto> tasks);
-    Task<ImportResultDto> ImportCsvAsync(string filePath);
+    Task ExportAsync(string filePath, IEnumerable<FiveW2HTaskDto> tasks);
+    Task<ImportResultDto> ImportAsync(string filePath);
     Task<string> ExportToJsonAsync(IEnumerable<FiveW2HTask> tasks);
     Task ExportToFileAsync(IEnumerable<FiveW2HTask> tasks, string filePath, string format);
 }

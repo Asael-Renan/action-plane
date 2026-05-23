@@ -103,21 +103,15 @@
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="Por que" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding Why, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                                         Height="110"
-                                         TextWrapping="Wrap"
-                                         AcceptsReturn="True"
-                                         VerticalContentAlignment="Top"/>
+                                <components:ResizableTextArea Text="{Binding Why, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                                                              EditorHeight="110"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Motivacao, impacto esperado ou problema resolvido."/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="Como" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding How, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                                         Height="110"
-                                         TextWrapping="Wrap"
-                                         AcceptsReturn="True"
-                                         VerticalContentAlignment="Top"/>
+                                <components:ResizableTextArea Text="{Binding How, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
+                                                              EditorHeight="110"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Passos, abordagem e recursos principais."/>
                             </StackPanel>
                         </Grid>
@@ -134,11 +128,11 @@
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="18"/>
-                                <ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="1.05*"/>
                                 <ColumnDefinition Width="18"/>
-                                <ColumnDefinition Width="1.2*"/>
+                                <ColumnDefinition Width="1.15*"/>
                                 <ColumnDefinition Width="18"/>
-                                <ColumnDefinition Width="1.6*"/>
+                                <ColumnDefinition Width="2.3*"/>
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
@@ -192,11 +186,10 @@
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="Detalhes adicionais" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
-                                         Height="120"
-                                         TextWrapping="Wrap"
-                                         AcceptsReturn="True"
-                                         VerticalContentAlignment="Top"/>
+                                <components:ResizableTextArea Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
+                                                              EditorHeight="120"
+                                                              MinEditorHeight="120"
+                                                              MaxEditorHeight="300"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Inclua riscos, dependencias e observacoes uteis."/>
                             </StackPanel>
                         </Grid>

@@ -33,8 +33,6 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="22"/>
-                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="28"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
@@ -51,17 +49,7 @@
                                Foreground="{DynamicResource TextSecondaryBrush}"/>
                 </StackPanel>
 
-                <Button Grid.Row="2"
-                        HorizontalAlignment="Left"
-                        Command="{Binding ToggleThemeCommand}"
-                        Style="{StaticResource ThemeToggleButtonStyle}"
-                        ToolTip="Alternar tema claro/escuro">
-                    <materialDesign:PackIcon Kind="ThemeLightDark"
-                                             Width="18"
-                                             Height="18"/>
-                </Button>
-
-                <StackPanel Grid.Row="4">
+                <StackPanel Grid.Row="2">
                     <Button Command="{Binding OpenDashboardCommand}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource SidebarNavButtonStyle}">
@@ -134,7 +122,7 @@
                     </Button>
                 </StackPanel>
 
-                <Border Grid.Row="5"
+                <Border Grid.Row="3"
                         Style="{StaticResource FormSectionCardStyle}"
                         Padding="14,12">
                     <StackPanel>
@@ -150,31 +138,52 @@
             </Grid>
         </Border>
 
-        <TabControl Grid.Column="1"
-                    SelectedIndex="{Binding SelectedTabIndex}"
-                    Background="{DynamicResource BackgroundBrush}"
-                    BorderThickness="0"
-                    Padding="0">
-            <TabControl.Resources>
-                <Style TargetType="{x:Type TabItem}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                </Style>
-                <Style TargetType="{x:Type TabPanel}">
-                    <Setter Property="Visibility" Value="Collapsed"/>
-                </Style>
-            </TabControl.Resources>
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-            <TabItem>
-                <sections:DashboardView/>
-            </TabItem>
+            <StackPanel Orientation="Horizontal"
+                        HorizontalAlignment="Right"
+                        Margin="0,18,24,0">
+                <Button Command="{Binding ToggleThemeCommand}"
+                        Style="{StaticResource ThemeToggleButtonStyle}"
+                        ToolTip="Alternar tema claro/escuro">
+                    <TextBlock Text="{Binding ThemeToggleGlyph}"
+                               FontFamily="Segoe MDL2 Assets"
+                               FontSize="18"
+                               VerticalAlignment="Center"
+                               HorizontalAlignment="Center"/>
+                </Button>
+            </StackPanel>
 
-            <TabItem>
-                <sections:TasksView/>
-            </TabItem>
+            <TabControl Grid.Row="1"
+                        SelectedIndex="{Binding SelectedTabIndex}"
+                        Background="{DynamicResource BackgroundBrush}"
+                        BorderThickness="0"
+                        Padding="0">
+                <TabControl.Resources>
+                    <Style TargetType="{x:Type TabItem}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Style>
+                    <Style TargetType="{x:Type TabPanel}">
+                        <Setter Property="Visibility" Value="Collapsed"/>
+                    </Style>
+                </TabControl.Resources>
 
-            <TabItem>
-                <sections:CreateTaskView/>
-            </TabItem>
-        </TabControl>
+                <TabItem>
+                    <sections:DashboardView/>
+                </TabItem>
+
+                <TabItem>
+                    <sections:TasksView/>
+                </TabItem>
+
+                <TabItem>
+                    <sections:CreateTaskView/>
+                </TabItem>
+            </TabControl>
+        </Grid>
     </Grid>
 </Window>
