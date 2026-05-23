@@ -86,21 +86,24 @@
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="O QUE"
                                            Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding NewWhat, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
+                                         Text="{Binding NewWhat, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2"
                                         Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="EMPRESA"
                                            Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding NewCompany, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
+                                         Text="{Binding NewCompany, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="4"
                                         Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="QUEM"
                                            Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding NewWho, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
+                                         Text="{Binding NewWho, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </Grid>
 
@@ -114,16 +117,16 @@
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="POR QUE"
                                            Style="{StaticResource FormLabelStyle}"/>
-                                <components:ResizableTextArea Text="{Binding NewWhy, UpdateSourceTrigger=PropertyChanged}"
-                                                              EditorHeight="120"/>
+                                <TextBox Style="{StaticResource MultilineTextBoxStyle}"
+                                         Text="{Binding NewWhy, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2"
                                         Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="COMO"
                                            Style="{StaticResource FormLabelStyle}"/>
-                                <components:ResizableTextArea Text="{Binding NewHow, UpdateSourceTrigger=PropertyChanged}"
-                                                              EditorHeight="120"/>
+                                <TextBox Style="{StaticResource MultilineTextBoxStyle}"
+                                         Text="{Binding NewHow, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
                         </Grid>
 
@@ -156,7 +159,8 @@
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="ONDE"
                                            Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding NewWhere, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
+                                         Text="{Binding NewWhere, UpdateSourceTrigger=PropertyChanged}"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2"
@@ -187,10 +191,9 @@
                         <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                             <TextBlock Text="OBSERVACOES"
                                        Style="{StaticResource FormLabelStyle}"/>
-                            <components:ResizableTextArea Text="{Binding NewNotes, UpdateSourceTrigger=PropertyChanged}"
-                                                          EditorHeight="90"
-                                                          MinEditorHeight="90"
-                                                          MaxEditorHeight="300"/>
+                            <TextBox Style="{StaticResource MultilineTextBoxStyle}"
+                                     MinHeight="90"
+                                     Text="{Binding NewNotes, UpdateSourceTrigger=PropertyChanged}"/>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>

@@ -184,9 +184,12 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="16"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="16"/>
-                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="16"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
                 <Border Style="{StaticResource ChartCardStyle}">
                     <Grid>
@@ -205,19 +208,30 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="Prioridades" Style="{StaticResource ChartHeadingStyle}"/>
-                        <oxy:PlotView Grid.Row="1" Model="{Binding PriorityChartModel}" Background="Transparent"/>
+                        <TextBlock Text="Volume por Empresa" Style="{StaticResource ChartHeadingStyle}"/>
+                        <oxy:PlotView Grid.Row="1" Model="{Binding CompanyDistributionChartModel}" Background="Transparent"/>
                     </Grid>
                 </Border>
 
-                <Border Grid.Column="4" Style="{StaticResource ChartCardStyle}">
+                <Border Grid.Row="2" Style="{StaticResource ChartCardStyle}">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <TextBlock Text="Por Responsavel" Style="{StaticResource ChartHeadingStyle}"/>
-                        <oxy:PlotView Grid.Row="1" Model="{Binding ResponsibleChartModel}" Background="Transparent"/>
+                        <TextBlock Text="Custo por Empresa" Style="{StaticResource ChartHeadingStyle}"/>
+                        <oxy:PlotView Grid.Row="1" Model="{Binding CompanyCostChartModel}" Background="Transparent"/>
+                    </Grid>
+                </Border>
+
+                <Border Grid.Row="2" Grid.Column="2" Style="{StaticResource ChartCardStyle}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="Prazos por Mes" Style="{StaticResource ChartHeadingStyle}"/>
+                        <oxy:PlotView Grid.Row="1" Model="{Binding TimelineChartModel}" Background="Transparent"/>
                     </Grid>
                 </Border>
             </Grid>

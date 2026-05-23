@@ -77,19 +77,22 @@
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="O que" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding What, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
+                                         Text="{Binding What, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Acao principal ou entrega esperada."/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="Empresa" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding Company, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
+                                         Text="{Binding Company, UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Nome da empresa ou unidade."/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="4" Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="Quem" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding Who, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
+                                         Text="{Binding Who, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Responsavel direto pela execucao."/>
                             </StackPanel>
                         </Grid>
@@ -103,15 +106,15 @@
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="Por que" Style="{StaticResource FormLabelStyle}"/>
-                                <components:ResizableTextArea Text="{Binding Why, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                                                              EditorHeight="110"/>
+                                <TextBox Style="{StaticResource MultilineTextBoxStyle}"
+                                         Text="{Binding Why, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Motivacao, impacto esperado ou problema resolvido."/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="Como" Style="{StaticResource FormLabelStyle}"/>
-                                <components:ResizableTextArea Text="{Binding How, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
-                                                              EditorHeight="110"/>
+                                <TextBox Style="{StaticResource MultilineTextBoxStyle}"
+                                         Text="{Binding How, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Passos, abordagem e recursos principais."/>
                             </StackPanel>
                         </Grid>
@@ -137,7 +140,8 @@
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="Onde" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding Where, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
+                                         Text="{Binding Where, UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Local, setor ou sistema."/>
                             </StackPanel>
 
@@ -186,10 +190,9 @@
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
                                 <TextBlock Text="Detalhes adicionais" Style="{StaticResource FormLabelStyle}"/>
-                                <components:ResizableTextArea Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
-                                                              EditorHeight="120"
-                                                              MinEditorHeight="120"
-                                                              MaxEditorHeight="300"/>
+                                <TextBox Style="{StaticResource MultilineTextBoxStyle}"
+                                         MinHeight="120"
+                                         Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Inclua riscos, dependencias e observacoes uteis."/>
                             </StackPanel>
                         </Grid>

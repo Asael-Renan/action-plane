@@ -128,7 +128,10 @@ public partial class MainViewModel : ObservableObject
     private PlotModel priorityChartModel = new();
 
     [ObservableProperty]
-    private PlotModel responsibleChartModel = new();
+    private PlotModel companyDistributionChartModel = new();
+
+    [ObservableProperty]
+    private PlotModel companyCostChartModel = new();
 
     [ObservableProperty]
     private PlotModel timelineChartModel = new();
@@ -694,8 +697,8 @@ public partial class MainViewModel : ObservableObject
     {
         StatusChartModel = BuildStatusDonutChart(models);
         PriorityChartModel = BuildPriorityColumnChart(models);
-
-        ResponsibleChartModel = BuildResponsibleChart(models);
+        CompanyDistributionChartModel = BuildCompanyDistributionChart(models);
+        CompanyCostChartModel = BuildCompanyCostChart(models);
         TimelineChartModel = BuildTimelineChart(models);
     }
 
@@ -820,13 +823,14 @@ public partial class MainViewModel : ObservableObject
         return model;
     }
 
-    private PlotModel BuildResponsibleChart(IReadOnlyCollection<TaskModel> models)
+    private PlotModel BuildCompanyDistributionChart(IReadOnlyCollection<TaskModel> models)
     {
         var model = CreatePlotModel();
-        var topResponsible = models
-            .GroupBy(task => string.IsNullOrWhiteSpace(task.Who) ? "Nao informado" : task.Who)
+        var topCompanies = models
+            .GroupBy(task => GetCompanyLabel(task.Company))
             .OrderByDescending(group => group.Count())
-            .Take(5)
+            .ThenBy(group => group.Key, StringComparer.CurrentCultureIgnoreCase)
+            .Take(6)
             .ToList();
 
         var categoryAxis = new CategoryAxis
@@ -839,9 +843,16 @@ public partial class MainViewModel : ObservableObject
             AxislineColor = OxyColors.Transparent
         };
 
-        foreach (var group in topResponsible)
+        if (topCompanies.Count == 0)
         {
-            categoryAxis.Labels.Add(group.Key);
+            categoryAxis.Labels.Add("Sem dados");
+        }
+        else
+        {
+            foreach (var group in topCompanies)
+            {
+                categoryAxis.Labels.Add(group.Key);
+            }
         }
 
         var valueAxis = new LinearAxis
@@ -858,14 +869,96 @@ public partial class MainViewModel : ObservableObject
 
         var barSeries = new BarSeries
         {
-            FillColor = OxyColor.FromRgb(66, 165, 245),
+            FillColor = OxyColor.FromRgb(88, 101, 242),
             StrokeColor = OxyColors.Transparent,
             BarWidth = 16
         };
 
-        foreach (var group in topResponsible)
+        if (topCompanies.Count == 0)
         {
-            barSeries.Items.Add(new BarItem(group.Count()));
+            barSeries.Items.Add(new BarItem(0));
+        }
+        else
+        {
+            foreach (var group in topCompanies)
+            {
+                barSeries.Items.Add(new BarItem(group.Count()));
+            }
+        }
+
+        model.Axes.Add(categoryAxis);
+        model.Axes.Add(valueAxis);
+        model.Series.Add(barSeries);
+        return model;
+    }
+
+    private PlotModel BuildCompanyCostChart(IReadOnlyCollection<TaskModel> models)
+    {
+        var model = CreatePlotModel();
+        var topCompanies = models
+            .GroupBy(task => GetCompanyLabel(task.Company))
+            .Select(group => new
+            {
+                Company = group.Key,
+                TotalCost = group.Sum(task => task.HowMuch)
+            })
+            .OrderByDescending(group => group.TotalCost)
+            .ThenBy(group => group.Company, StringComparer.CurrentCultureIgnoreCase)
+            .Take(6)
+            .ToList();
+
+        var categoryAxis = new CategoryAxis
+        {
+            Position = AxisPosition.Left,
+            GapWidth = 12,
+            IsTickCentered = true,
+            TextColor = ChartAxisTextColor,
+            TicklineColor = OxyColors.Transparent,
+            AxislineColor = OxyColors.Transparent
+        };
+
+        if (topCompanies.Count == 0)
+        {
+            categoryAxis.Labels.Add("Sem dados");
+        }
+        else
+        {
+            foreach (var group in topCompanies)
+            {
+                categoryAxis.Labels.Add(group.Company);
+            }
+        }
+
+        var valueAxis = new LinearAxis
+        {
+            Position = AxisPosition.Bottom,
+            MinimumPadding = 0,
+            AbsoluteMinimum = 0,
+            MajorGridlineColor = OxyColors.Transparent,
+            MinorGridlineColor = OxyColors.Transparent,
+            TicklineColor = OxyColors.Transparent,
+            AxislineColor = OxyColors.Transparent,
+            TextColor = ChartAxisTextColor,
+            StringFormat = "R$ #,##0"
+        };
+
+        var barSeries = new BarSeries
+        {
+            FillColor = OxyColor.FromRgb(34, 197, 94),
+            StrokeColor = OxyColors.Transparent,
+            BarWidth = 16
+        };
+
+        if (topCompanies.Count == 0)
+        {
+            barSeries.Items.Add(new BarItem(0));
+        }
+        else
+        {
+            foreach (var group in topCompanies)
+            {
+                barSeries.Items.Add(new BarItem((double)group.TotalCost));
+            }
         }
 
         model.Axes.Add(categoryAxis);
@@ -962,4 +1055,11 @@ public partial class MainViewModel : ObservableObject
         nameof(Priority.Low) => "Baixa",
         _ => priority
     };
+
+    private static string GetCompanyLabel(string? company)
+    {
+        return string.IsNullOrWhiteSpace(company)
+            ? "Sem empresa"
+            : company.Trim();
+    }
 }
