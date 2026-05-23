@@ -23,6 +23,8 @@ namespace FiveW2H.App.UI.ViewModels;
 /// </summary>
 public partial class MainViewModel : ObservableObject
 {
+    private static readonly GroupingOption DefaultGroupingOption = new() { Label = "Sem agrupamento", PropertyName = string.Empty };
+
     private readonly ITaskService _taskService;
     private readonly IBackupService _backupService;
     private readonly IDialogService _dialogService;
@@ -57,36 +59,6 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty]
     private Priority? filterPriority;
-
-    [ObservableProperty]
-    private string newWhat = string.Empty;
-
-    [ObservableProperty]
-    private string newWhy = string.Empty;
-
-    [ObservableProperty]
-    private string newWhere = string.Empty;
-
-    [ObservableProperty]
-    private string newCompany = string.Empty;
-
-    [ObservableProperty]
-    private DateTime? newWhen = DateTime.Today;
-
-    [ObservableProperty]
-    private string newWho = string.Empty;
-
-    [ObservableProperty]
-    private string newHow = string.Empty;
-
-    [ObservableProperty]
-    private decimal newHowMuch;
-
-    [ObservableProperty]
-    private Priority selectedPriority = Priority.Medium;
-
-    [ObservableProperty]
-    private string newNotes = string.Empty;
 
     [ObservableProperty]
     private int selectedTabIndex;
@@ -146,12 +118,13 @@ public partial class MainViewModel : ObservableObject
     private ObservableCollection<string> responsibleOptions = new();
 
     [ObservableProperty]
-    private GroupingOption selectedGrouping = new() { Label = "Agrupar por empresa", PropertyName = nameof(TaskModel.CompanyGroupLabel) };
+    private GroupingOption? selectedGrouping = new() { Label = "Agrupar por empresa", PropertyName = nameof(TaskModel.CompanyGroupLabel) };
 
     private ICollectionView _tasksView;
 
     public string ThemeToggleGlyph => IsDarkTheme ? "\uE706" : "\uE708";
     public ICollectionView TasksView => _tasksView;
+    public string SelectedGroupingLabel => GetSelectedGrouping().Label;
 
     public IReadOnlyList<Priority> Priorities { get; } = Enum.GetValues<Priority>();
     public IReadOnlyList<FiveW2H.App.Core.Models.TaskStatus> Statuses { get; } = Enum.GetValues<FiveW2H.App.Core.Models.TaskStatus>();
@@ -200,8 +173,9 @@ public partial class MainViewModel : ObservableObject
         ApplyGrouping();
     }
 
-    partial void OnSelectedGroupingChanged(GroupingOption value)
+    partial void OnSelectedGroupingChanged(GroupingOption? value)
     {
+        OnPropertyChanged(nameof(SelectedGroupingLabel));
         ApplyGrouping();
     }
 
@@ -240,6 +214,18 @@ public partial class MainViewModel : ObservableObject
         {
             IsLoading = false;
         }
+    }
+
+    [RelayCommand]
+    public async Task RefreshTasks()
+    {
+        if (HasActiveFilters())
+        {
+            await SearchTasks();
+            return;
+        }
+
+        await LoadTasks();
     }
 
     [RelayCommand]
@@ -301,70 +287,6 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public async Task CreateTask()
-    {
-        try
-        {
-            IsLoading = true;
-            StatusMessage = "Creating task...";
-
-            if (string.IsNullOrWhiteSpace(NewWhat) ||
-                string.IsNullOrWhiteSpace(NewWhy) ||
-                string.IsNullOrWhiteSpace(NewWho) ||
-                string.IsNullOrWhiteSpace(NewHow) ||
-                NewWhen is null)
-            {
-                StatusMessage = "Fill in the required fields to create the task";
-                return;
-            }
-
-            var dto = new CreateFiveW2HTaskDto
-            {
-                What = NewWhat.Trim(),
-                Why = NewWhy.Trim(),
-                Where = NewWhere.Trim(),
-                Company = NewCompany.Trim(),
-                When = NewWhen.Value,
-                Who = NewWho.Trim(),
-                How = NewHow.Trim(),
-                HowMuch = NewHowMuch,
-                Priority = SelectedPriority,
-                Notes = NewNotes.Trim()
-            };
-
-            var createdTask = await _taskService.CreateTaskAsync(dto);
-
-            ClearCreateForm();
-            SelectedTabIndex = 1;
-            StatusMessage = $"Task #{createdTask.Id} created successfully";
-            await SearchTasks();
-        }
-        catch (Exception ex)
-        {
-            StatusMessage = $"Error: {ex.Message}";
-        }
-        finally
-        {
-            IsLoading = false;
-        }
-    }
-
-    [RelayCommand]
-    public void ClearCreateForm()
-    {
-        NewWhat = string.Empty;
-        NewWhy = string.Empty;
-        NewWhere = string.Empty;
-        NewCompany = string.Empty;
-        NewWhen = DateTime.Today;
-        NewWho = string.Empty;
-        NewHow = string.Empty;
-        NewHowMuch = 0;
-        SelectedPriority = Priority.Medium;
-        NewNotes = string.Empty;
-    }
-
-    [RelayCommand]
     public void OpenDashboard()
     {
         SelectedTabIndex = 0;
@@ -377,9 +299,18 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    public void OpenCreateScreen()
+    public async Task OpenCreateTaskDialog()
     {
-        SelectedTabIndex = 2;
+        var saved = await _dialogService.ShowTaskEditorDialogAsync();
+        if (!saved)
+        {
+            StatusMessage = "Creation cancelled";
+            return;
+        }
+
+        SelectedTabIndex = 1;
+        StatusMessage = "Task created successfully";
+        await RefreshTasks();
     }
 
     [RelayCommand(CanExecute = nameof(HasSelectedTask))]
@@ -391,7 +322,7 @@ public partial class MainViewModel : ObservableObject
             return;
         }
 
-        var edited = await _dialogService.ShowEditItemDialogAsync(SelectedTask);
+        var edited = await _dialogService.ShowTaskEditorDialogAsync(SelectedTask);
         if (!edited)
         {
             StatusMessage = "Edit cancelled";
@@ -399,7 +330,7 @@ public partial class MainViewModel : ObservableObject
         }
 
         StatusMessage = "Task updated successfully";
-        await SearchTasks();
+        await RefreshTasks();
     }
 
     [RelayCommand]
@@ -461,7 +392,7 @@ public partial class MainViewModel : ObservableObject
             StatusMessage = "Importing data...";
 
             var result = await _backupService.ImportAsync(filePath);
-            await SearchTasks();
+            await RefreshTasks();
 
             StatusMessage = result.Errors.Count == 0
                 ? $"Imported {result.ImportedCount}, updated {result.UpdatedCount}, skipped {result.SkippedCount}"
@@ -508,7 +439,7 @@ public partial class MainViewModel : ObservableObject
             if (result)
             {
                 StatusMessage = "Task deleted successfully";
-                await LoadTasks();
+                await RefreshTasks();
             }
             else
             {
@@ -670,10 +601,11 @@ public partial class MainViewModel : ObservableObject
         using (view.DeferRefresh())
         {
             view.GroupDescriptions.Clear();
+            var grouping = GetSelectedGrouping();
 
-            if (!string.IsNullOrWhiteSpace(SelectedGrouping.PropertyName))
+            if (!string.IsNullOrWhiteSpace(grouping.PropertyName))
             {
-                view.GroupDescriptions.Add(new PropertyGroupDescription(SelectedGrouping.PropertyName));
+                view.GroupDescriptions.Add(new PropertyGroupDescription(grouping.PropertyName));
             }
         }
     }
@@ -737,7 +669,9 @@ public partial class MainViewModel : ObservableObject
         {
             nameof(TaskStatus.Pending),
             nameof(TaskStatus.InProgress),
-            nameof(TaskStatus.Completed)
+            nameof(TaskStatus.Completed),
+            nameof(TaskStatus.OnHold),
+            nameof(TaskStatus.Cancelled)
         };
 
         foreach (var status in statusOrder)
@@ -1061,5 +995,23 @@ public partial class MainViewModel : ObservableObject
         return string.IsNullOrWhiteSpace(company)
             ? "Sem empresa"
             : company.Trim();
+    }
+
+    private GroupingOption GetSelectedGrouping()
+    {
+        return GroupingOptions.FirstOrDefault(option =>
+                   string.Equals(option.PropertyName, SelectedGrouping?.PropertyName, StringComparison.Ordinal))
+               ?? DefaultGroupingOption;
+    }
+
+    private bool HasActiveFilters()
+    {
+        return !string.IsNullOrWhiteSpace(SearchText) ||
+               FilterStartDate is not null ||
+               FilterEndDate is not null ||
+               !string.IsNullOrWhiteSpace(FilterResponsible) ||
+               !string.IsNullOrWhiteSpace(FilterCompany) ||
+               FilterStatus is not null ||
+               FilterPriority is not null;
     }
 }

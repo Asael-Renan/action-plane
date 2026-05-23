@@ -4,230 +4,213 @@
         xmlns:components="clr-namespace:FiveW2H.App.UI.Views.Components"
         xmlns:helpers="clr-namespace:FiveW2H.App.UI.Helpers"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        Title="Editar registro"
-        Width="920"
-        Height="760"
-        MinWidth="760"
-        MinHeight="640"
+        Title="Editor de acao"
+        Width="980"
+        Height="780"
+        MinWidth="820"
+        MinHeight="680"
         WindowStartupLocation="CenterOwner"
         ResizeMode="CanResize"
         Icon="/Resources/Icons/app-icon.ico"
         Background="{DynamicResource BackgroundBrush}">
     <Grid Margin="24">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="18"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="16"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
-
-        <Border Grid.Row="0" Style="{StaticResource WorkspaceHeaderCardStyle}">
+        <Border Style="{StaticResource WorkspaceHeaderCardStyle}"
+                Padding="0"
+                CornerRadius="{StaticResource CornerRadiusLarge}">
             <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="1"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
 
-                <StackPanel>
-                    <TextBlock Text="Editar Acao" Style="{StaticResource PageTitleTextStyle}"/>
-                    <TextBlock Text="{Binding Id, StringFormat=Registro #{0:00000}}"
-                               Margin="0,8,0,0"
-                               Style="{StaticResource PageSubtitleTextStyle}"/>
-                    <Border Style="{StaticResource ChipBadgeStyle}"
-                            HorizontalAlignment="Left"
-                            Margin="0,18,0,0">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="CircleSmall"
-                                                     Width="18"
-                                                     Height="18"
-                                                     Foreground="{DynamicResource PrimaryAccentBrush}"
-                                                     Margin="-4,0,4,0"/>
-                            <TextBlock Text="Edicao pronta para salvar"
-                                       FontSize="12"
-                                       FontWeight="SemiBold"
-                                       Foreground="{DynamicResource TextPrimaryBrush}"/>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
+                <Grid Grid.Row="0" Margin="24,22,24,20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="1"
-                        Command="{Binding CancelCommand}"
-                        Content="Fechar"
-                        Style="{StaticResource SecondaryActionButtonStyle}"
-                        VerticalAlignment="Top"/>
-            </Grid>
-        </Border>
-
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
-            <StackPanel>
-                <Border Style="{StaticResource FormSectionCardStyle}"
-                        Margin="0,0,0,18">
                     <StackPanel>
-                        <components:FormSectionHeader Title="OS 5 W"
-                                                      Description="Revise objetivo, empresa e responsabilidade."/>
+                        <TextBlock Text="{Binding Title}"
+                                   Style="{StaticResource PageTitleTextStyle}"/>
+                        <TextBlock Text="{Binding Subtitle}"
+                                   Margin="0,8,0,0"
+                                   Style="{StaticResource PageSubtitleTextStyle}"/>
+                        <Border Style="{StaticResource ChipBadgeStyle}"
+                                HorizontalAlignment="Left"
+                                Margin="0,18,0,0">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="CircleSmall"
+                                                         Width="18"
+                                                         Height="18"
+                                                         Margin="-4,0,4,0"
+                                                         Foreground="{DynamicResource PrimaryAccentBrush}"/>
+                                <TextBlock Text="{Binding ModeBadgeText}"
+                                           FontSize="12"
+                                           FontWeight="SemiBold"
+                                           Foreground="{DynamicResource TextPrimaryBrush}"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
 
-                        <Grid Margin="0,18,0,0">
+                    <Button Grid.Column="1"
+                            Command="{Binding CancelCommand}"
+                            Content="Fechar"
+                            Style="{StaticResource SecondaryActionButtonStyle}"
+                            VerticalAlignment="Top"/>
+                </Grid>
+
+                <Border Grid.Row="1"
+                        Background="{DynamicResource BorderBrush}"/>
+
+                <ScrollViewer Grid.Row="2"
+                              VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="22,20,22,18">
+                        <Grid Margin="0,0,0,14">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="18"/>
+                                <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="18"/>
+                                <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="O que" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="O QUE" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Style="{StaticResource WrappingTextBoxStyle}"
                                          Text="{Binding What, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Acao principal ou entrega esperada."/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Empresa" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="EMPRESA" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Style="{StaticResource WrappingTextBoxStyle}"
                                          Text="{Binding Company, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Nome da empresa ou unidade."/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="4" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Quem" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="QUEM" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Style="{StaticResource WrappingTextBoxStyle}"
                                          Text="{Binding Who, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Responsavel direto pela execucao."/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Style="{StaticResource FormFieldContainerStyle}">
+                                <TextBlock Text="POR QUE" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox Style="{StaticResource MultilineTextBoxStyle}"
+                                         Text="{Binding Why, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
+                                <TextBlock Text="COMO" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox Style="{StaticResource MultilineTextBoxStyle}"
+                                         Text="{Binding How, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,14">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2.3*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="1.35*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="2.55*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <StackPanel Style="{StaticResource FormFieldContainerStyle}">
+                                <TextBlock Text="ONDE" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
+                                         Text="{Binding Where, UpdateSourceTrigger=PropertyChanged}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
+                                <TextBlock Text="QUANDO" Style="{StaticResource FormLabelStyle}"/>
+                                <DatePicker MinWidth="0"
+                                            SelectedDate="{Binding When, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="4" Style="{StaticResource FormFieldContainerStyle}">
+                                <TextBlock Text="CUSTO" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBox Text="{Binding HowMuch, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, StringFormat=N2}"/>
+                            </StackPanel>
+
+                            <StackPanel Grid.Column="6" Style="{StaticResource FormFieldContainerStyle}">
+                                <components:PrioritySelector ItemsSource="{Binding Priorities}"
+                                                             ItemTemplate="{StaticResource PrioritySelectorItemTemplate}"
+                                                             Label="PRIORIDADE"
+                                                             SelectedItem="{Binding SelectedPriority}"
+                                                             SelectorStyle="{StaticResource SegmentedSelectorStyle}"
+                                                             Hint=""/>
                             </StackPanel>
                         </Grid>
 
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="18"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Por que" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Style="{StaticResource MultilineTextBoxStyle}"
-                                         Text="{Binding Why, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Motivacao, impacto esperado ou problema resolvido."/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Como" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Style="{StaticResource MultilineTextBoxStyle}"
-                                         Text="{Binding How, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Passos, abordagem e recursos principais."/>
-                            </StackPanel>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <Border Style="{StaticResource FormSectionCardStyle}"
-                        Margin="0,0,0,18">
-                    <StackPanel>
-                        <components:FormSectionHeader Title="ONDE • QUANDO • QUANTO"
-                                                      Description="Revise contexto, prazo, custo e prioridade."/>
-
-                        <Grid Margin="0,18,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2.35*"/>
-                                <ColumnDefinition Width="18"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="18"/>
-                                <ColumnDefinition Width="1.35*"/>
-                                <ColumnDefinition Width="18"/>
-                                <ColumnDefinition Width="2.55*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <StackPanel Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Onde" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Style="{StaticResource WrappingTextBoxStyle}"
-                                         Text="{Binding Where, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Local, setor ou sistema."/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Quando" Style="{StaticResource FormLabelStyle}"/>
-                                <DatePicker MinWidth="0"
-                                            SelectedDate="{Binding When, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Prazo esperado da acao."/>
-                            </StackPanel>
-
-                            <StackPanel Grid.Column="4" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Custo" Style="{StaticResource FormLabelStyle}"/>
-                                <TextBox Text="{Binding HowMuch, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True, StringFormat=N2}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Valor estimado em reais."/>
-                            </StackPanel>
-
-                            <components:PrioritySelector Grid.Column="6"
-                                                         ItemsSource="{Binding Priorities}"
-                                                         SelectedItem="{Binding SelectedPriority}"
-                                                         Hint="Defina urgencia e peso da entrega."/>
-                        </Grid>
-                    </StackPanel>
-                </Border>
-
-                <Border Style="{StaticResource FormSectionCardStyle}"
-                        Margin="0,0,0,18">
-                    <StackPanel>
-                        <components:FormSectionHeader Title="CONTROLE DO REGISTRO"
-                                                      Description="Status e anotacoes de acompanhamento."/>
-
-                        <Grid Margin="0,18,0,0">
-                            <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="220"/>
-                                <ColumnDefinition Width="18"/>
+                                <ColumnDefinition Width="20"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
                             <StackPanel Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Status" Style="{StaticResource FormLabelStyle}"/>
-                                <ComboBox ItemsSource="{Binding Statuses}"
-                                          helpers:ComboBoxAutoComplete.IsEnabled="False"
-                                          ItemTemplate="{StaticResource EnumComboBoxItemTemplate}"
-                                          SelectedItem="{Binding SelectedStatus}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Fase atual da iniciativa."/>
+                                <components:PrioritySelector ItemsSource="{Binding Statuses}"
+                                                             ItemTemplate="{StaticResource StatusSelectorItemTemplate}"
+                                                             Label="STATUS"
+                                                             SelectedItem="{Binding SelectedStatus}"
+                                                             SelectorStyle="{StaticResource VerticalSegmentedSelectorStyle}"
+                                                             Hint=""/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="2" Style="{StaticResource FormFieldContainerStyle}">
-                                <TextBlock Text="Detalhes adicionais" Style="{StaticResource FormLabelStyle}"/>
+                                <TextBlock Text="OBSERVACOES" Style="{StaticResource FormLabelStyle}"/>
                                 <TextBox Style="{StaticResource MultilineTextBoxStyle}"
-                                         MinHeight="120"
+                                         MinHeight="130"
                                          Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"/>
-                                <TextBlock Style="{StaticResource FieldHintTextStyle}" Text="Inclua riscos, dependencias e observacoes uteis."/>
                             </StackPanel>
                         </Grid>
                     </StackPanel>
+                </ScrollViewer>
+
+                <Border Grid.Row="3"
+                        Background="{DynamicResource BorderBrush}"/>
+
+                <Border Grid.Row="4"
+                        Style="{StaticResource FooterActionBarStyle}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="{Binding ValidationSummary}"
+                                   Foreground="{DynamicResource DangerBrush}"
+                                   FontSize="12"
+                                   TextWrapping="Wrap"
+                                   VerticalAlignment="Center"
+                                   Margin="0,0,16,0"/>
+
+                        <StackPanel Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Right">
+                            <Button Command="{Binding CancelCommand}"
+                                    Content="Cancelar"
+                                    Style="{StaticResource TertiaryActionButtonStyle}"
+                                    Margin="0,0,10,0"/>
+                            <Button Command="{Binding SaveCommand}"
+                                    Content="{Binding PrimaryActionText}"
+                                    Style="{StaticResource PrimaryActionButtonStyle}"/>
+                        </StackPanel>
+                    </Grid>
                 </Border>
-            </StackPanel>
-        </ScrollViewer>
-
-        <Border Grid.Row="4" Style="{StaticResource FooterActionBarStyle}">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0"
-                           Text="{Binding ValidationSummary}"
-                           Foreground="{DynamicResource DangerBrush}"
-                           FontSize="12"
-                           TextWrapping="Wrap"
-                           VerticalAlignment="Center"
-                           Margin="0,0,16,0"/>
-
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Right">
-                    <Button Command="{Binding CancelCommand}"
-                            Content="Cancelar"
-                            Style="{StaticResource TertiaryActionButtonStyle}"
-                            Margin="0,0,10,0"/>
-                    <Button Command="{Binding SaveCommand}"
-                            Content="Salvar Acao"
-                            Style="{StaticResource PrimaryActionButtonStyle}"/>
-                </StackPanel>
             </Grid>
         </Border>
     </Grid>

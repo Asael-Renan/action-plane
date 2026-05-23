@@ -16,6 +16,18 @@
         <TextBlock Text="{Binding Converter={StaticResource EnumDisplayConverter}}"/>
     </DataTemplate>
 
+    <DataTemplate x:Key="PrioritySelectorItemTemplate">
+        <TextBlock Text="{Binding Converter={StaticResource PriorityTextConverter}}"
+                   FontSize="12"
+                   FontWeight="SemiBold"/>
+    </DataTemplate>
+
+    <DataTemplate x:Key="StatusSelectorItemTemplate">
+        <TextBlock Text="{Binding Converter={StaticResource StatusTextConverter}}"
+                   FontSize="12"
+                   FontWeight="SemiBold"/>
+    </DataTemplate>
+
     <CornerRadius x:Key="CornerRadiusSmall">8</CornerRadius>
     <CornerRadius x:Key="CornerRadiusMedium">10</CornerRadius>
     <CornerRadius x:Key="CornerRadiusLarge">14</CornerRadius>

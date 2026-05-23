@@ -15,9 +15,9 @@ public class DialogService : IDialogService
         _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService));
     }
 
-    public Task<bool> ShowEditItemDialogAsync(TaskModel task)
+    public Task<bool> ShowTaskEditorDialogAsync(TaskModel? task = null)
     {
-        var viewModel = new EditItemViewModel(_taskService, task);
+        var viewModel = new TaskEditorViewModel(_taskService, task);
         var window = new EditItemWindow
         {
             DataContext = viewModel,

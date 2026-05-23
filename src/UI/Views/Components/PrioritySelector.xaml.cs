@@ -22,6 +22,12 @@ public partial class PrioritySelector : UserControl
             typeof(PrioritySelector),
             new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
+    public static readonly DependencyProperty ItemTemplateProperty =
+        DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(PrioritySelector), new PropertyMetadata(null));
+
+    public static readonly DependencyProperty SelectorStyleProperty =
+        DependencyProperty.Register(nameof(SelectorStyle), typeof(Style), typeof(PrioritySelector), new PropertyMetadata(null));
+
     public string Label
     {
         get => (string)GetValue(LabelProperty);
@@ -44,6 +50,18 @@ public partial class PrioritySelector : UserControl
     {
         get => GetValue(SelectedItemProperty);
         set => SetValue(SelectedItemProperty, value);
+    }
+
+    public DataTemplate? ItemTemplate
+    {
+        get => (DataTemplate?)GetValue(ItemTemplateProperty);
+        set => SetValue(ItemTemplateProperty, value);
+    }
+
+    public Style? SelectorStyle
+    {
+        get => (Style?)GetValue(SelectorStyleProperty);
+        set => SetValue(SelectorStyleProperty, value);
     }
 
     public PrioritySelector()

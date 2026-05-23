@@ -6,16 +6,9 @@
         <TextBlock Text="{Binding Label, RelativeSource={RelativeSource AncestorType=UserControl}}"
                    Style="{StaticResource FormLabelStyle}"/>
         <ListBox ItemsSource="{Binding ItemsSource, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                 ItemTemplate="{Binding ItemTemplate, RelativeSource={RelativeSource AncestorType=UserControl}}"
                  SelectedItem="{Binding SelectedItem, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Style="{StaticResource SegmentedSelectorStyle}">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Converter={StaticResource PriorityTextConverter}}"
-                               FontSize="12"
-                               FontWeight="SemiBold"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+                 Style="{Binding SelectorStyle, RelativeSource={RelativeSource AncestorType=UserControl}}"/>
         <TextBlock Text="{Binding Hint, RelativeSource={RelativeSource AncestorType=UserControl}}">
             <TextBlock.Style>
                 <Style BasedOn="{StaticResource FieldHintTextStyle}" TargetType="{x:Type TextBlock}">

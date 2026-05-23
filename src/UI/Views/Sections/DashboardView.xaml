@@ -22,7 +22,7 @@
                     </StackPanel>
 
                     <Button Grid.Column="1"
-                            Command="{Binding LoadTasksCommand}"
+                            Command="{Binding RefreshTasksCommand}"
                             Style="{StaticResource PrimaryActionButtonStyle}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Refresh"

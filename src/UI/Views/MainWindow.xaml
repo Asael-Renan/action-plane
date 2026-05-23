@@ -90,17 +90,8 @@
                         </StackPanel>
                     </Button>
 
-                    <Button Command="{Binding OpenCreateScreenCommand}">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource SidebarNavButtonStyle}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SelectedTabIndex}" Value="2">
-                                        <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                                        <Setter Property="Foreground" Value="White"/>
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
+                    <Button Command="{Binding OpenCreateTaskDialogCommand}"
+                            Style="{StaticResource SidebarNavButtonStyle}">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="PlusBoxOutline"
                                                      Width="16"
@@ -178,10 +169,6 @@
 
                 <TabItem>
                     <sections:TasksView/>
-                </TabItem>
-
-                <TabItem>
-                    <sections:CreateTaskView/>
                 </TabItem>
             </TabControl>
         </Grid>

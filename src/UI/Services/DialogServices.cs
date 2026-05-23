@@ -16,7 +16,7 @@ public interface IMessageDialogService
 
 public interface IDialogService
 {
-    Task<bool> ShowEditItemDialogAsync(FiveW2H.App.UI.Models.TaskModel task);
+    Task<bool> ShowTaskEditorDialogAsync(FiveW2H.App.UI.Models.TaskModel? task = null);
 }
 
 public class FileDialogService : IFileDialogService

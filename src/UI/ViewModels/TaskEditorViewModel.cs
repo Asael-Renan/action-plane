@@ -7,7 +7,13 @@ using FiveW2H.App.UI.Models;
 
 namespace FiveW2H.App.UI.ViewModels;
 
-public partial class EditItemViewModel : ObservableValidator
+public enum TaskEditorMode
+{
+    Create,
+    Edit
+}
+
+public partial class TaskEditorViewModel : ObservableValidator
 {
     private readonly ITaskService _taskService;
 
@@ -59,15 +65,29 @@ public partial class EditItemViewModel : ObservableValidator
     [ObservableProperty]
     private bool isSaving;
 
+    public TaskEditorMode Mode { get; }
     public IReadOnlyList<FiveW2H.App.Core.Models.TaskStatus> Statuses { get; } = Enum.GetValues<FiveW2H.App.Core.Models.TaskStatus>();
     public IReadOnlyList<Priority> Priorities { get; } = Enum.GetValues<Priority>();
+    public string Title => Mode == TaskEditorMode.Create ? "Nova Acao" : "Editar Acao";
+    public string Subtitle => Mode == TaskEditorMode.Create ? "Preencha os campos principais do plano 5W2H." : $"Registro #{Id:00000}";
+    public string ModeBadgeText => Mode == TaskEditorMode.Create ? "Novo registro pronto para cadastro" : "Edicao pronta para salvar";
+    public string PrimaryActionText => Mode == TaskEditorMode.Create ? "Criar Acao" : "Salvar Acao";
 
     public event Action<bool?>? CloseRequested;
 
-    public EditItemViewModel(ITaskService taskService, TaskModel task)
+    public TaskEditorViewModel(ITaskService taskService, TaskModel? task = null)
     {
         _taskService = taskService ?? throw new ArgumentNullException(nameof(taskService));
-        ArgumentNullException.ThrowIfNull(task);
+
+        Mode = task is null ? TaskEditorMode.Create : TaskEditorMode.Edit;
+        SelectedStatus = FiveW2H.App.Core.Models.TaskStatus.Pending;
+        SelectedPriority = Priority.Medium;
+        When = DateTime.Today;
+
+        if (task is null)
+        {
+            return;
+        }
 
         Id = task.Id;
         What = task.What;
@@ -99,21 +119,41 @@ public partial class EditItemViewModel : ObservableValidator
             IsSaving = true;
             ValidationSummary = string.Empty;
 
-            await _taskService.UpdateTaskAsync(new UpdateFiveW2HTaskDto
+            if (Mode == TaskEditorMode.Create)
             {
-                Id = Id,
-                What = What.Trim(),
-                Why = Why.Trim(),
-                Where = Where.Trim(),
-                Company = Company.Trim(),
-                When = When.Value,
-                Who = Who.Trim(),
-                How = How.Trim(),
-                HowMuch = HowMuch,
-                Status = SelectedStatus,
-                Priority = SelectedPriority,
-                Notes = Notes.Trim()
-            });
+                await _taskService.CreateTaskAsync(new CreateFiveW2HTaskDto
+                {
+                    What = What.Trim(),
+                    Why = Why.Trim(),
+                    Where = Where.Trim(),
+                    Company = Company.Trim(),
+                    When = When.Value,
+                    Who = Who.Trim(),
+                    How = How.Trim(),
+                    HowMuch = HowMuch,
+                    Status = SelectedStatus,
+                    Priority = SelectedPriority,
+                    Notes = Notes.Trim()
+                });
+            }
+            else
+            {
+                await _taskService.UpdateTaskAsync(new UpdateFiveW2HTaskDto
+                {
+                    Id = Id,
+                    What = What.Trim(),
+                    Why = Why.Trim(),
+                    Where = Where.Trim(),
+                    Company = Company.Trim(),
+                    When = When.Value,
+                    Who = Who.Trim(),
+                    How = How.Trim(),
+                    HowMuch = HowMuch,
+                    Status = SelectedStatus,
+                    Priority = SelectedPriority,
+                    Notes = Notes.Trim()
+                });
+            }
 
             CloseRequested?.Invoke(true);
         }

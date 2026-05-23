@@ -91,7 +91,7 @@ public class TaskService : ITaskService
             HowMuch = dto.HowMuch,
             Priority = dto.Priority,
             Notes = dto.Notes,
-            Status = TaskStatus.Pending,
+            Status = dto.Status,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow
         };

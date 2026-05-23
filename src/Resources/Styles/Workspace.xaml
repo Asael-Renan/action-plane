@@ -124,10 +124,35 @@
         <Setter Property="Background" Value="{DynamicResource SurfaceBrush}"/>
     </Style>
 
-    <Style x:Key="SegmentedSelectorItemStyle" TargetType="{x:Type ListBoxItem}">
-        <Setter Property="Margin" Value="0,0,6,0"/>
-        <Setter Property="Padding" Value="12,8"/>
-        <Setter Property="MinWidth" Value="70"/>
+    <Style x:Key="SegmentedSelectorBaseStyle" TargetType="{x:Type ListBox}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Padding" Value="0"/>
+        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
+        <Setter Property="AlternationCount" Value="128"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBox}">
+                    <Border Background="{DynamicResource SurfaceMutedBrush}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="{DynamicResource CornerRadiusMedium}"
+                            ClipToBounds="True">
+                        <ScrollViewer HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+                                      VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="HorizontalSegmentedSelectorItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Padding" Value="14,10"/>
+        <Setter Property="MinWidth" Value="74"/>
         <Setter Property="HorizontalContentAlignment" Value="Center"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>
         <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
@@ -135,22 +160,23 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ListBoxItem}">
                     <Border x:Name="itemBorder"
-                            Background="{DynamicResource SurfaceMutedBrush}"
+                            Background="Transparent"
                             BorderBrush="{DynamicResource BorderBrush}"
-                            BorderThickness="1"
-                            CornerRadius="{DynamicResource CornerRadiusSmall}"
+                            BorderThickness="1,0,0,0"
                             Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
                     <ControlTemplate.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter TargetName="itemBorder" Property="BorderThickness" Value="0"/>
+                        </Trigger>
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="itemBorder" Property="BorderBrush" Value="{DynamicResource PrimaryAccentBrush}"/>
+                            <Setter TargetName="itemBorder" Property="Background" Value="{DynamicResource SurfaceRaisedBrush}"/>
                             <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
                         </Trigger>
                         <Trigger Property="IsSelected" Value="True">
                             <Setter TargetName="itemBorder" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                            <Setter TargetName="itemBorder" Property="BorderBrush" Value="{DynamicResource PrimaryAccentBrush}"/>
                             <Setter Property="Foreground" Value="White"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
@@ -159,17 +185,61 @@
         </Setter>
     </Style>
 
-    <Style x:Key="SegmentedSelectorStyle" TargetType="{x:Type ListBox}">
-        <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="BorderThickness" Value="0"/>
-        <Setter Property="Padding" Value="0"/>
-        <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
-        <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Disabled"/>
-        <Setter Property="ItemContainerStyle" Value="{StaticResource SegmentedSelectorItemStyle}"/>
+    <Style x:Key="VerticalSegmentedSelectorItemStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Padding" Value="14,11"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Foreground" Value="{DynamicResource TextSecondaryBrush}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="itemBorder"
+                            Background="Transparent"
+                            BorderBrush="{DynamicResource BorderBrush}"
+                            BorderThickness="0,1,0,0"
+                            Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter TargetName="itemBorder" Property="BorderThickness" Value="0"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="itemBorder" Property="Background" Value="{DynamicResource SurfaceRaisedBrush}"/>
+                            <Setter Property="Foreground" Value="{DynamicResource TextPrimaryBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="itemBorder" Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                            <Setter Property="Foreground" Value="White"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="SegmentedSelectorStyle"
+           TargetType="{x:Type ListBox}"
+           BasedOn="{StaticResource SegmentedSelectorBaseStyle}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource HorizontalSegmentedSelectorItemStyle}"/>
         <Setter Property="ItemsPanel">
             <Setter.Value>
                 <ItemsPanelTemplate>
-                    <WrapPanel Orientation="Horizontal"/>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="VerticalSegmentedSelectorStyle"
+           TargetType="{x:Type ListBox}"
+           BasedOn="{StaticResource SegmentedSelectorBaseStyle}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource VerticalSegmentedSelectorItemStyle}"/>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Vertical"/>
                 </ItemsPanelTemplate>
             </Setter.Value>
         </Setter>

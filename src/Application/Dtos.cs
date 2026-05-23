@@ -36,6 +36,7 @@ public class CreateFiveW2HTaskDto
     public string Who { get; set; } = string.Empty;
     public string How { get; set; } = string.Empty;
     public decimal HowMuch { get; set; }
+    public FiveW2H.App.Core.Models.TaskStatus Status { get; set; } = FiveW2H.App.Core.Models.TaskStatus.Pending;
     public Priority Priority { get; set; } = Priority.Medium;
     public string Notes { get; set; } = string.Empty;
 }
